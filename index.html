@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Performance Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Trading Performance Dashboard</h1>
+        <p id="last-updated">Last updated: Loading...</p>
+    </header>
+    
+    <main>
+        <div class="dashboard-container">
+            <div class="metrics-card">
+                <h2>Performance Metrics</h2>
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span class="metric-label">Win Rate</span>
+                        <span id="win-rate" class="metric-value">-</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Total Trades</span>
+                        <span id="total-trades" class="metric-value">-</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Profit Factor</span>
+                        <span id="profit-factor" class="metric-value">-</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Avg Win</span>
+                        <span id="avg-win" class="metric-value">-</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <h2>Cumulative PnL</h2>
+                <div id="pnl-chart" class="chart"></div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>Trading Dashboard - Powered by Plotly.js and GitHub Pages</p>
+    </footer>
+    
+    <script src="dashboard.js"></script>
+</body>
+</html>
