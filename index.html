@@ -39,7 +39,7 @@
             </div>
             
             <div class="chart-container">
-                <h2>Cumulative PnL</h2>
+                <h2>Equity Curve (%)</h2>
                 <div id="pnl-chart" class="chart"></div>
             </div>
         </div>
@@ -155,18 +155,18 @@
             addValueClass(avgWin, signalsData.avg_win);
         }
 
-        // Create PnL chart
+        // Create Equity Curve chart
         function createPnLChart(metrics) {
-            const pnlData = metrics.strategies.Signals.total.cumulative_pnl_chart;
+            const equityData = metrics.strategies.Signals.total.equity_curve_chart;
             
-            if (!pnlData || pnlData.length === 0) {
-                document.getElementById('pnl-chart').innerHTML = '<p class="no-data">No PnL data available</p>';
+            if (!equityData || equityData.length === 0) {
+                document.getElementById('pnl-chart').innerHTML = '<p class="no-data">No equity curve data available</p>';
                 return;
             }
             
             // Prepare data for Plotly
-            const x = pnlData.map(point => point.timestamp);
-            const y = pnlData.map(point => point.cumulative_pnl);
+            const x = equityData.map(point => point.timestamp);
+            const y = equityData.map(point => point.equity_curve);
             
             // Create the trace
             const trace = {
@@ -174,7 +174,7 @@
                 y: y,
                 type: 'scatter',
                 mode: 'lines+markers',
-                name: 'Cumulative PnL',
+                name: 'Equity Curve',
                 line: {
                     color: '#4ade80',
                     width: 2
@@ -198,10 +198,10 @@
                     tickfont: { color: '#fde2f3' }
                 },
                 yaxis: {
-                    title: 'Cumulative PnL (USD)',
+                    title: 'Equity Curve (%)',
                     gridcolor: 'rgba(255,255,255,0.1)',
                     tickfont: { color: '#fde2f3' },
-                    tickprefix: '$'
+                    ticksuffix: '%'
                 },
                 showlegend: false,
                 hovermode: 'closest'

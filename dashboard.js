@@ -3,7 +3,8 @@
 // Fetch trading metrics data
 async function fetchTradingData() {
     try {
-        const response = await fetch('../data/trading_metrics.json');
+        // For local testing, use relative path
+        const response = await fetch('./data/trading_metrics.json');
         if (!response.ok) {
             throw new Error('Failed to fetch trading data');
         }
@@ -18,6 +19,27 @@ async function fetchTradingData() {
             </div>
         `;
     }
+}
+
+// Handle special values like Infinity and NaN in JSON
+function parseSpecialValues(obj) {
+    if (typeof obj !== 'object' || obj === null) return obj;
+    
+    const result = Array.isArray(obj) ? [] : {};
+    
+    for (const key in obj) {
+        if (obj[key] === 'Infinity' || obj[key] === Infinity) {
+            result[key] = Infinity;
+        } else if (obj[key] === 'NaN' || (typeof obj[key] === 'number' && isNaN(obj[key]))) {
+            result[key] = NaN;
+        } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+            result[key] = parseSpecialValues(obj[key]);
+        } else {
+            result[key] = obj[key];
+        }
+    }
+    
+    return result;
 }
 
 // Format numbers for display
@@ -35,7 +57,7 @@ function formatNumber(num, decimals = 2) {
 // Format percentage
 function formatPercent(num) {
     if (num === null || num === undefined || isNaN(num)) return '-';
-    return `${formatNumber(num * 100, 1)}%`;
+    return `${formatNumber(num, 1)}%`; // Note: real data already has percentages
 }
 
 // Add positive/negative class based on value
@@ -59,7 +81,7 @@ function updateMetricsDisplay(metrics) {
     // Update metrics
     const winRate = document.getElementById('win-rate');
     winRate.textContent = formatPercent(signalsData.win_rate);
-    addValueClass(winRate, signalsData.win_rate - 0.5); // Above 50% is positive
+    addValueClass(winRate, signalsData.win_rate - 50); // Above 50% is positive
     
     const totalTrades = document.getElementById('total-trades');
     totalTrades.textContent = signalsData.total_trades;
@@ -73,29 +95,33 @@ function updateMetricsDisplay(metrics) {
     addValueClass(avgWin, signalsData.avg_win);
 }
 
-// Create PnL chart
+// Create Equity Curve chart
 function createPnLChart(metrics) {
-    const pnlData = metrics.strategies.Signals.total.cumulative_pnl_chart;
+    const equityData = metrics.strategies.Signals.total.equity_curve_chart;
     
-    if (!pnlData || pnlData.length === 0) {
-        document.getElementById('pnl-chart').innerHTML = '<p class="no-data">No PnL data available</p>';
+    if (!equityData || equityData.length === 0) {
+        document.getElementById('pnl-chart').innerHTML = '<p class="no-data">No equity curve data available</p>';
         return;
     }
     
     // Prepare data for Plotly
-    const x = pnlData.map(point => point.timestamp);
-    const y = pnlData.map(point => point.cumulative_pnl);
+    const x = equityData.map(point => point.timestamp);
+    const y = equityData.map(point => point.equity_curve);
     
     // Create the trace
     const trace = {
         x: x,
         y: y,
         type: 'scatter',
-        mode: 'lines',
-        name: 'Cumulative PnL',
+        mode: 'lines+markers',
+        name: 'Equity Curve',
         line: {
             color: '#4ade80',
             width: 2
+        },
+        marker: {
+            size: 6,
+            color: '#4ade80'
         },
         fill: 'tozeroy',
         fillcolor: 'rgba(74, 222, 128, 0.1)'
@@ -109,14 +135,13 @@ function createPnLChart(metrics) {
         xaxis: {
             title: 'Date',
             gridcolor: 'rgba(255,255,255,0.1)',
-            tickfont: { color: '#fde2f3' },
-            tickformat: '%b %d, %Y'
+            tickfont: { color: '#fde2f3' }
         },
         yaxis: {
-            title: 'Cumulative PnL',
+            title: 'Equity Curve (%)',
             gridcolor: 'rgba(255,255,255,0.1)',
             tickfont: { color: '#fde2f3' },
-            tickprefix: '$'
+            ticksuffix: '%'
         },
         showlegend: false,
         hovermode: 'closest'
@@ -134,11 +159,25 @@ function createPnLChart(metrics) {
 
 // Initialize dashboard
 async function initDashboard() {
-    const data = await fetchTradingData();
-    if (!data) return;
-    
-    updateMetricsDisplay(data);
-    createPnLChart(data);
+    try {
+        const data = await fetchTradingData();
+        if (!data) return;
+        
+        // Parse special values like Infinity and NaN
+        const parsedData = parseSpecialValues(data);
+        
+        updateMetricsDisplay(parsedData);
+        createPnLChart(parsedData);
+    } catch (error) {
+        console.error('Error initializing dashboard:', error);
+        document.body.innerHTML = `
+            <div style="text-align: center; padding: 2rem; color: #f87171;">
+                <h2>Error Loading Dashboard</h2>
+                <p>${error.message || 'Unknown error occurred'}</p>
+                <p>Please try again later or check the data source.</p>
+            </div>
+        `;
+    }
 }
 
 // Start the dashboard when the page loads
