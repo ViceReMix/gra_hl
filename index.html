@@ -50,54 +50,6 @@
     </footer>
     
     <script>
-        // Embedded trading data
-        const tradingData = {
-          "last_updated": "2025-09-04 13:50:00",
-          "strategies": {
-            "Signals": {
-              "total": {
-                "total_trades": 2,
-                "win_rate": 100.0,
-                "avg_win": 4.692016787251621,
-                "avg_loss": 0,
-                "max_profit": 5.3154946183953005,
-                "max_drawdown": 4.068538956107941,
-                "risk_reward_ratio": Infinity,
-                "returns_mean": 4.692016787251621,
-                "returns_skew": NaN,
-                "avg_duration": 13.987477502499999,
-                "winners_risk_ratio": NaN,
-                "losers_risk_ratio": 0,
-                "winners_leverage": 1.0,
-                "losers_leverage": 0,
-                "avg_position_size": 385.6,
-                "avg_notional_value": 141.113024,
-                "long_trades_percent": 100.0,
-                "short_trades_percent": 0.0,
-                "long_win_rate": 100.0,
-                "short_win_rate": 0,
-                "avg_win_usd": 7.113264000000004,
-                "avg_loss_usd": 0,
-                "total_profit_usd": 14.226528000000007,
-                "total_loss_usd": 0,
-                "profit_factor": Infinity,
-                "expectancy_usd": 7.113264000000004,
-                "equity_weighted_return": 0.07105687197097679,
-                "cumulative_pnl_chart": [
-                  {
-                    "cumulative_pnl": 6.083616000000012,
-                    "timestamp": "2025-09-02 01:50:00+00:00"
-                  },
-                  {
-                    "cumulative_pnl": 14.226528000000007,
-                    "timestamp": "2025-09-03 13:45:00+00:00"
-                  }
-                ]
-              }
-            }
-          }
-        };
-
         // Format numbers for display
         function formatNumber(num, decimals = 2) {
             if (num === null || num === undefined || isNaN(num)) return '-';
@@ -122,6 +74,58 @@
                 element.classList.add('positive');
             } else if (value < 0) {
                 element.classList.add('negative');
+            }
+        }
+
+        // Parse special values in JSON that aren't standard
+        function parseSpecialValues(obj) {
+            if (obj === null || typeof obj !== 'object') return obj;
+            
+            if (Array.isArray(obj)) {
+                return obj.map(item => parseSpecialValues(item));
+            }
+            
+            const result = {};
+            for (const [key, value] of Object.entries(obj)) {
+                if (typeof value === 'string') {
+                    if (value === 'Infinity' || value === '+Infinity') {
+                        result[key] = Infinity;
+                    } else if (value === '-Infinity') {
+                        result[key] = -Infinity;
+                    } else if (value === 'NaN') {
+                        result[key] = NaN;
+                    } else {
+                        result[key] = value;
+                    }
+                } else if (typeof value === 'object' && value !== null) {
+                    result[key] = parseSpecialValues(value);
+                } else {
+                    result[key] = value;
+                }
+            }
+            return result;
+        }
+
+        // Fetch trading data from JSON file
+        async function fetchTradingData() {
+            try {
+                const response = await fetch('data/trading_metrics.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const text = await response.text();
+                
+                // Replace literal "Infinity" and "NaN" with valid JSON values
+                const sanitizedText = text
+                    .replace(/:\s*Infinity/g, ':"+Infinity"')
+                    .replace(/:\s*-Infinity/g, ':"-Infinity"')
+                    .replace(/:\s*NaN/g, ':"NaN"');
+                
+                const data = JSON.parse(sanitizedText);
+                return parseSpecialValues(data);
+            } catch (error) {
+                console.error('Error fetching trading data:', error);
+                throw error;
             }
         }
 
@@ -213,18 +217,23 @@
             Plotly.newPlot('pnl-chart', [trace], layout, config);
         }
 
-        // Initialize dashboard with embedded data
-        function initDashboard() {
+        // Initialize dashboard
+        async function initDashboard() {
             try {
-                updateMetricsDisplay(tradingData);
-                createPnLChart(tradingData);
+                const data = await fetchTradingData();
+                if (!data) {
+                    throw new Error('Failed to fetch trading data');
+                }
+                
+                updateMetricsDisplay(data);
+                createPnLChart(data);
             } catch (error) {
                 console.error('Error initializing dashboard:', error);
                 document.body.innerHTML = `
                     <div style="text-align: center; padding: 2rem; color: #f87171;">
                         <h2>Error Loading Dashboard</h2>
-                        <p>${error.message || 'Unknown error occurred'}</p>
-                        <p>Please check the console for more details.</p>
+                        <p>Failed to fetch trading data</p>
+                        <p>Please try again later or check the data source.</p>
                     </div>
                 `;
             }
