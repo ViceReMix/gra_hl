@@ -1,5 +1,5 @@
 {
-  "last_updated": "2025-09-04 14:10:42",
+  "last_updated": "2025-09-04 14:29:13",
   "strategies": {
     "Signals": {
       "total": {
@@ -17,18 +17,11 @@
         "losers_risk_ratio": 0,
         "winners_leverage": 1.0,
         "losers_leverage": 0,
-        "avg_position_size": 385.6,
-        "avg_notional_value": 141.113024,
         "long_trades_percent": 100.0,
         "short_trades_percent": 0.0,
         "long_win_rate": 100.0,
         "short_win_rate": 0,
-        "avg_win_usd": 7.113264000000004,
-        "avg_loss_usd": 0,
-        "total_profit_usd": 14.226528000000007,
-        "total_loss_usd": 0,
         "profit_factor": Infinity,
-        "expectancy_usd": 7.113264000000004,
         "equity_weighted_return": 0.07105687197097679,
         "cumulative_pnl_chart": [
           {
@@ -56,18 +49,11 @@
         "losers_risk_ratio": 0,
         "winners_leverage": 1.0,
         "losers_leverage": 0,
-        "avg_position_size": 385.6,
-        "avg_notional_value": 141.113024,
         "long_trades_percent": 100,
         "short_trades_percent": 0,
         "long_win_rate": 100.0,
         "short_win_rate": 0,
-        "avg_win_usd": 7.113264000000004,
-        "avg_loss_usd": 0,
-        "total_profit_usd": 14.226528000000007,
-        "total_loss_usd": 0,
         "profit_factor": Infinity,
-        "expectancy_usd": 7.113264000000004,
         "equity_weighted_return": 0.07105687197097679,
         "cumulative_pnl_chart": [
           {
@@ -95,8 +81,6 @@
         "losers_risk_ratio": 0,
         "winners_leverage": 0,
         "losers_leverage": 0,
-        "avg_position_size": 0,
-        "avg_notional_value": 0,
         "long_trades_percent": 0,
         "short_trades_percent": 100,
         "long_win_rate": 0,
