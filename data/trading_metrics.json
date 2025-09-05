@@ -1,67 +1,81 @@
 {
-  "last_updated": "2025-09-05 05:50:00",
+  "last_updated": "2025-09-05 06:38:16",
   "strategies": {
     "Signals": {
       "total": {
         "total_trades": 2,
+        "winning_trades": 2,
         "win_rate": 100.0,
         "avg_win": 4.692016787251621,
         "avg_loss": 0,
         "max_profit": 5.3154946183953005,
         "max_drawdown": 4.068538956107941,
+        "intra_trade_drawdown": -0.44472568248077593,
         "risk_reward_ratio": Infinity,
-        "returns_mean": 4.692016787251621,
-        "returns_skew": NaN,
-        "avg_duration": 13.987477502499999,
-        "winners_risk_ratio": NaN,
+        "winners_risk_ratio": 14.5081351628621,
         "losers_risk_ratio": 0,
         "winners_leverage": 1.0,
         "losers_leverage": 0,
+        "avg_duration": 13.987477502499999,
+        "returns_mean": 4.692016787251621,
+        "returns_skew": NaN,
+        "profit_factor": Infinity,
+        "equity_weighted_return": 0.07105687197097679,
+        "max_consecutive_wins": "2",
+        "max_consecutive_losses": 0,
+        "kelly_criterion": 0,
+        "sharpe_ratio": 5.321371060813492,
+        "calmar_ratio": 1.153243667535167,
         "long_trades_percent": 100.0,
         "short_trades_percent": 0.0,
         "long_win_rate": 100.0,
         "short_win_rate": 0,
-        "profit_factor": Infinity,
-        "equity_weighted_return": 0.07105687197097679,
-        "cumulative_pnl_chart": [
+        "equity_curve_chart": [
           {
-            "cumulative_pnl": 6.083616000000012,
+            "equity_curve": 104.06853895610794,
             "timestamp": "2025-09-02 01:50:00+00:00"
           },
           {
-            "cumulative_pnl": 14.226528000000007,
+            "equity_curve": 109.38403357450323,
             "timestamp": "2025-09-03 13:45:00+00:00"
           }
         ]
       },
       "long": {
         "total_trades": 2,
+        "winning_trades": 2,
         "win_rate": 100.0,
         "avg_win": 4.692016787251621,
         "avg_loss": 0,
         "max_profit": 5.3154946183953005,
         "max_drawdown": 4.068538956107941,
+        "intra_trade_drawdown": -0.44472568248077593,
         "risk_reward_ratio": Infinity,
-        "returns_mean": 4.692016787251621,
-        "returns_skew": NaN,
-        "avg_duration": 13.987477502499999,
-        "winners_risk_ratio": NaN,
+        "winners_risk_ratio": 14.5081351628621,
         "losers_risk_ratio": 0,
         "winners_leverage": 1.0,
         "losers_leverage": 0,
+        "avg_duration": 13.987477502499999,
+        "returns_mean": 4.692016787251621,
+        "returns_skew": NaN,
+        "profit_factor": Infinity,
+        "equity_weighted_return": 0.07105687197097679,
+        "max_consecutive_wins": "2",
+        "max_consecutive_losses": 0,
+        "kelly_criterion": 0,
+        "sharpe_ratio": 5.321371060813492,
+        "calmar_ratio": 1.153243667535167,
         "long_trades_percent": 100,
         "short_trades_percent": 0,
         "long_win_rate": 100.0,
         "short_win_rate": 0,
-        "profit_factor": Infinity,
-        "equity_weighted_return": 0.07105687197097679,
-        "cumulative_pnl_chart": [
+        "equity_curve_chart": [
           {
-            "cumulative_pnl": 6.083616000000012,
+            "equity_curve": 104.06853895610794,
             "timestamp": "2025-09-02 01:50:00+00:00"
           },
           {
-            "cumulative_pnl": 14.226528000000007,
+            "equity_curve": 109.38403357450323,
             "timestamp": "2025-09-03 13:45:00+00:00"
           }
         ]
