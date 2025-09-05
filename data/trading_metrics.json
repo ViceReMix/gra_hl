@@ -1,0 +1,148 @@
+{
+  "last_updated": "2025-09-05 07:46:01",
+  "strategies": {
+    "Signals": {
+      "total": {
+        "total_trades": 3,
+        "winning_trades": 3,
+        "win_rate": 100.0,
+        "avg_win": 4.353940014615952,
+        "avg_loss": 0,
+        "max_profit": 5.3154946183953005,
+        "max_drawdown": 0,
+        "intra_trade_drawdown": -0.44472568248077593,
+        "risk_reward_ratio": Infinity,
+        "winners_risk_ratio": 14.334594667807124,
+        "losers_risk_ratio": 0,
+        "winners_leverage": 1.0,
+        "losers_leverage": 0,
+        "avg_duration": 12.720199770277778,
+        "returns_mean": 4.353940014615952,
+        "returns_skew": 1.3343380188223677,
+        "profit_factor": Infinity,
+        "equity_weighted_return": 0.0656741029010529,
+        "max_consecutive_wins": "3",
+        "max_consecutive_losses": 0,
+        "kelly_criterion": 0,
+        "sharpe_ratio": 5.090283100932966,
+        "calmar_ratio": 0,
+        "long_trades_percent": 100.0,
+        "short_trades_percent": 0.0,
+        "long_win_rate": 100.0,
+        "short_win_rate": 0,
+        "equity_curve_chart": [
+          {
+            "equity_curve": 104.06853895610794,
+            "timestamp": "2025-09-02 01:50:00+00:00"
+          },
+          {
+            "equity_curve": 109.38403357450323,
+            "timestamp": "2025-09-03 13:45:00+00:00"
+          },
+          {
+            "equity_curve": 113.06182004384786,
+            "timestamp": "2025-09-05 07:30:00+00:00"
+          }
+        ]
+      },
+      "long": {
+        "total_trades": 3,
+        "winning_trades": 3,
+        "win_rate": 100.0,
+        "avg_win": 4.353940014615952,
+        "avg_loss": 0,
+        "max_profit": 5.3154946183953005,
+        "max_drawdown": 0,
+        "intra_trade_drawdown": -0.44472568248077593,
+        "risk_reward_ratio": Infinity,
+        "winners_risk_ratio": 14.334594667807124,
+        "losers_risk_ratio": 0,
+        "winners_leverage": 1.0,
+        "losers_leverage": 0,
+        "avg_duration": 12.720199770277778,
+        "returns_mean": 4.353940014615952,
+        "returns_skew": 1.3343380188223677,
+        "profit_factor": Infinity,
+        "equity_weighted_return": 0.0656741029010529,
+        "max_consecutive_wins": "3",
+        "max_consecutive_losses": 0,
+        "kelly_criterion": 0,
+        "sharpe_ratio": 5.090283100932966,
+        "calmar_ratio": 0,
+        "long_trades_percent": 100,
+        "short_trades_percent": 0,
+        "long_win_rate": 100.0,
+        "short_win_rate": 0,
+        "equity_curve_chart": [
+          {
+            "equity_curve": 104.06853895610794,
+            "timestamp": "2025-09-02 01:50:00+00:00"
+          },
+          {
+            "equity_curve": 109.38403357450323,
+            "timestamp": "2025-09-03 13:45:00+00:00"
+          },
+          {
+            "equity_curve": 113.06182004384786,
+            "timestamp": "2025-09-05 07:30:00+00:00"
+          }
+        ]
+      },
+      "short": {
+        "total_trades": 0,
+        "win_rate": 0,
+        "avg_win": 0,
+        "avg_loss": 0,
+        "max_profit": 0,
+        "max_drawdown": 0,
+        "risk_reward_ratio": 0,
+        "returns_mean": 0,
+        "returns_skew": 0,
+        "avg_duration": 0,
+        "winners_risk_ratio": 0,
+        "losers_risk_ratio": 0,
+        "winners_leverage": 0,
+        "losers_leverage": 0,
+        "long_trades_percent": 0,
+        "short_trades_percent": 100,
+        "long_win_rate": 0,
+        "short_win_rate": 0
+      }
+    }
+  },
+  "individual_trades": [
+    {
+      "trade_id": "TSTUSDT_TSTUSDT_pure_signal_strategy_1757020661_iefj89",
+      "symbol": "TSTUSDT",
+      "position_side": "LONG",
+      "timestamp_exit": "2025-09-05T07:29:04.802616+00:00",
+      "pnl_percentage": 3.677786469344615,
+      "max_pnl": 3.677786469344615,
+      "min_pnl": -0.2629335387323893,
+      "duration_hours": 10.185644305833334,
+      "leverage": 1.0
+    },
+    {
+      "trade_id": "PENDLEUSDT_PENDLEUSDT_pure_signal_strategy_1756819060_j1svjz",
+      "symbol": "PENDLEUSDT",
+      "position_side": "LONG",
+      "timestamp_exit": "2025-09-03T13:44:12.266325+00:00",
+      "pnl_percentage": 5.3154946183953005,
+      "max_pnl": 5.3154946183953005,
+      "min_pnl": -0.2675425630166905,
+      "duration_hours": 24.43920161638889,
+      "leverage": 1.0
+    },
+    {
+      "trade_id": "PNUTUSDT_PNUTUSDT_pure_signal_strategy_1756765063_zrrv6m",
+      "symbol": "PNUTUSDT",
+      "position_side": "LONG",
+      "timestamp_exit": "2025-09-02T01:50:16.117407+00:00",
+      "pnl_percentage": 4.068538956107941,
+      "max_pnl": 4.068538956107941,
+      "min_pnl": -0.44472568248077593,
+      "duration_hours": 3.535753388611111,
+      "leverage": 1.0
+    }
+  ]
+}
