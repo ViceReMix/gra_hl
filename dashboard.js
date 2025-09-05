@@ -284,11 +284,20 @@ function createPnLChart(individualTrades) {
                     ticks: {
                         color: '#fde2f3',
                         callback: function(value) {
-                            return value.toFixed(1) + '%';
-                        }
+                            return value.toFixed(2) + '%';
+                        },
+                        stepSize: 0.05,  // 0.05% intervals for better granularity
+                        maxTicksLimit: 8  // Limit number of ticks to avoid overcrowding
                     },
                     grid: {
                         color: 'rgba(253, 226, 243, 0.1)'
+                    },
+                    beginAtZero: true,
+                    suggestedMin: 0,
+                    suggestedMax: function(context) {
+                        // Dynamic max based on data with some padding
+                        const maxValue = Math.max(...context.chart.data.datasets[0].data);
+                        return Math.ceil(maxValue * 1.2 * 20) / 20; // Round up to nearest 0.05%
                     }
                 }
             },
