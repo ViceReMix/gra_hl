@@ -70,6 +70,7 @@ let pnlChart = null;
 let riskRewardChart = null;
 let pnlDistributionChart = null;
 let durationDistributionChart = null;
+let isInitialized = false;
 
 // Update stat cards with trading metrics
 function updateStatCards(metrics, filter = 'total') {
@@ -236,6 +237,7 @@ function createPnLChart(individualTrades) {
     // Destroy existing chart if it exists
     if (pnlChart) {
         pnlChart.destroy();
+        pnlChart = null;
     }
     
     const chartData = processTradesForChart(individualTrades);
@@ -307,6 +309,7 @@ function createRiskRewardChart(individualTrades) {
     // Destroy existing chart if it exists
     if (riskRewardChart) {
         riskRewardChart.destroy();
+        riskRewardChart = null;
     }
     
     if (!individualTrades || individualTrades.length === 0) {
@@ -461,6 +464,7 @@ function createPnLDistributionChart(individualTrades) {
     // Destroy existing chart if it exists
     if (pnlDistributionChart) {
         pnlDistributionChart.destroy();
+        pnlDistributionChart = null;
     }
     
     if (!individualTrades || individualTrades.length === 0) {
@@ -608,6 +612,7 @@ function createDurationDistributionChart(individualTrades) {
     // Destroy existing chart if it exists
     if (durationDistributionChart) {
         durationDistributionChart.destroy();
+        durationDistributionChart = null;
     }
     
     if (!individualTrades || individualTrades.length === 0) {
@@ -746,46 +751,88 @@ function createDurationDistributionChart(individualTrades) {
 
 // Handle filter button clicks
 function setupFilterButtons() {
+    // Prevent multiple event listeners
+    if (isInitialized) return;
+    
     const filterButtons = document.querySelectorAll('.filter-btn');
     
     filterButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            // Remove active class from all buttons
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            
-            // Add active class to clicked button
-            button.classList.add('active');
-            
-            // Get filter value and update display
-            const filter = button.getAttribute('data-filter');
-            currentFilter = filter;
-            
-            if (currentMetrics) {
-                updateStatCards(currentMetrics, filter);
-            }
-        });
+        button.addEventListener('click', handleFilterClick);
     });
+}
+
+// Filter click handler (separate function to prevent memory leaks)
+function handleFilterClick(event) {
+    const button = event.target;
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    
+    // Remove active class from all buttons
+    filterButtons.forEach(btn => btn.classList.remove('active'));
+    
+    // Add active class to clicked button
+    button.classList.add('active');
+    
+    // Get filter value and update display
+    const filter = button.getAttribute('data-filter');
+    currentFilter = filter;
+    
+    if (currentMetrics) {
+        updateStatCards(currentMetrics, filter);
+    }
+}
+
+// Destroy all charts
+function destroyAllCharts() {
+    if (pnlChart) {
+        pnlChart.destroy();
+        pnlChart = null;
+    }
+    if (riskRewardChart) {
+        riskRewardChart.destroy();
+        riskRewardChart = null;
+    }
+    if (pnlDistributionChart) {
+        pnlDistributionChart.destroy();
+        pnlDistributionChart = null;
+    }
+    if (durationDistributionChart) {
+        durationDistributionChart.destroy();
+        durationDistributionChart = null;
+    }
 }
 
 // Initialize dashboard
 async function initDashboard() {
     try {
+        // Prevent multiple initializations
+        if (isInitialized) {
+            console.log('Dashboard already initialized, skipping...');
+            return;
+        }
+        
         const data = await fetchTradingData();
         if (!data) {
             throw new Error('Failed to fetch trading data');
         }
         
+        // Destroy any existing charts first
+        destroyAllCharts();
+        
         currentMetrics = data;
         updateStatCards(data, currentFilter);
         setupFilterButtons();
         
-        // Create PnL chart if individual trades data exists
-        if (data.individual_trades) {
+        // Create charts if individual trades data exists
+        if (data.individual_trades && data.individual_trades.length > 0) {
             createPnLChart(data.individual_trades);
             createRiskRewardChart(data.individual_trades);
             createPnLDistributionChart(data.individual_trades);
             createDurationDistributionChart(data.individual_trades);
         }
+        
+        isInitialized = true;
+        console.log('Dashboard initialized successfully');
+        
     } catch (error) {
         console.error('Error initializing dashboard:', error);
         document.body.innerHTML = `
@@ -799,4 +846,14 @@ async function initDashboard() {
 }
 
 // Start the dashboard when the page loads
-document.addEventListener('DOMContentLoaded', initDashboard);
+document.addEventListener('DOMContentLoaded', function() {
+    // Ensure we only initialize once
+    if (!isInitialized) {
+        initDashboard();
+    }
+});
+
+// Clean up on page unload to prevent memory leaks
+window.addEventListener('beforeunload', function() {
+    destroyAllCharts();
+});
