@@ -1,5 +1,5 @@
 {
-  "last_updated": "2025-09-05 08:02:46",
+  "last_updated": "2025-09-05 08:08:48",
   "strategies": {
     "Signals": {
       "total": {
@@ -84,7 +84,7 @@
   },
   "individual_trades": [
     {
-      "trade_id": "TSTUSDT_strategy",
+      "trade_id": "TSTUSDT_48f1bc6c",
       "symbol": "TSTUSDT",
       "position_side": "LONG",
       "timestamp_exit": "2025-09-05T07:29:04.802616+00:00",
@@ -95,7 +95,7 @@
       "leverage": 1.0
     },
     {
-      "trade_id": "PENDLEUSDT_strategy",
+      "trade_id": "PENDLEUSDT_3769405d",
       "symbol": "PENDLEUSDT",
       "position_side": "LONG",
       "timestamp_exit": "2025-09-03T13:44:12.266325+00:00",
@@ -106,7 +106,7 @@
       "leverage": 1.0
     },
     {
-      "trade_id": "PNUTUSDT_strategy",
+      "trade_id": "PNUTUSDT_bba8042c",
       "symbol": "PNUTUSDT",
       "position_side": "LONG",
       "timestamp_exit": "2025-09-02T01:50:16.117407+00:00",
