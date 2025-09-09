@@ -75,7 +75,7 @@
         "losers_leverage": 0,
         "avg_duration": 6.738743217222222,
         "returns_mean": 4.369073178594472,
-        "returns_skew": NaN,
+        "returns_skew": 0,
         "profit_factor": 999999,
         "avg_position_size_percent": 1.3989325374604316,
         "equity_weighted_return": 0.05987346651827153,
