@@ -485,11 +485,12 @@ function createPnLDistributionChart(individualTrades) {
     const longTrades = individualTrades.filter(trade => trade.position_side === 'LONG').map(trade => trade.pnl_percentage);
     const shortTrades = individualTrades.filter(trade => trade.position_side === 'SHORT').map(trade => trade.pnl_percentage);
     
-    // Calculate histogram bins (10 bins for better visibility with few trades)
+    // Calculate histogram bins with 0.1% granularity
     const minPnl = Math.min(...allTrades);
     const maxPnl = Math.max(...allTrades);
-    const numBins = 10;
-    const binSize = (maxPnl - minPnl) / numBins;
+    const binSize = 0.1; // Fixed 0.1% bin size
+    const numBins = Math.ceil((maxPnl - Math.floor(minPnl * 10) / 10) / binSize);
+    const adjustedMinPnl = Math.floor(minPnl * 10) / 10; // Round down to nearest 0.1%
     
     // Debug: log the trades and bin info
     console.log('All trades PnL:', allTrades);
@@ -502,8 +503,8 @@ function createPnLDistributionChart(individualTrades) {
     const shortTradesData = [];
     
     for (let i = 0; i < numBins; i++) {
-        const binStart = minPnl + (i * binSize);
-        const binEnd = minPnl + ((i + 1) * binSize);
+        const binStart = adjustedMinPnl + (i * binSize);
+        const binEnd = adjustedMinPnl + ((i + 1) * binSize);
         bins.push(`${binStart.toFixed(1)}`);
         
         // Count trades in each bin (include binEnd for the last bin)
@@ -633,11 +634,12 @@ function createDurationDistributionChart(individualTrades) {
     const longTrades = individualTrades.filter(trade => trade.position_side === 'LONG').map(trade => trade.duration_hours);
     const shortTrades = individualTrades.filter(trade => trade.position_side === 'SHORT').map(trade => trade.duration_hours);
     
-    // Calculate histogram bins (10 bins for better visibility with few trades)
+    // Calculate histogram bins with 1-hour granularity
     const minDuration = Math.min(...allTrades);
     const maxDuration = Math.max(...allTrades);
-    const numBins = 10;
-    const binSize = (maxDuration - minDuration) / numBins;
+    const binSize = 1; // Fixed 1-hour bin size
+    const numBins = Math.ceil((maxDuration - Math.floor(minDuration)) / binSize);
+    const adjustedMinDuration = Math.floor(minDuration); // Round down to nearest hour
     
     // Debug: log the trades and bin info
     console.log('All trades Duration:', allTrades);
@@ -650,9 +652,9 @@ function createDurationDistributionChart(individualTrades) {
     const shortTradesData = [];
     
     for (let i = 0; i < numBins; i++) {
-        const binStart = minDuration + (i * binSize);
-        const binEnd = minDuration + ((i + 1) * binSize);
-        bins.push(`${binStart.toFixed(1)}`);
+        const binStart = adjustedMinDuration + (i * binSize);
+        const binEnd = adjustedMinDuration + ((i + 1) * binSize);
+        bins.push(`${binStart.toFixed(0)}`);
         
         // Count trades in each bin (include binEnd for the last bin)
         const allCount = allTrades.filter(duration => 
