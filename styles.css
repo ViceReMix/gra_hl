@@ -26,12 +26,10 @@ body {
 }
 
 header {
-    background-color: var(--component-bg);
-    padding: 1.5rem;
+    background-color: var(--background); /* same as page, not a container */
+    padding: 1.5rem 0; /* remove side padding bar feeling */
     text-align: center;
     color: var(--text-primary);
-    border-bottom: 1px solid var(--border-color);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 header h1 {
@@ -73,9 +71,9 @@ main {
     letter-spacing: 0.1em;
     text-decoration: none;
     text-align: center;
-    box-shadow: inset 0px 0px 0.5em 0px var(--accent),
-                0px 0px 0.5em 0px var(--accent);
-    animation: border-flicker 2s linear infinite;
+    /* Remove outer/inset glow; keep text neon only */
+    box-shadow: none;
+    animation: none;
 }
 
 .metrics-card .glowing-txt {
@@ -90,38 +88,13 @@ main {
     animation: faulty-flicker 2s linear infinite;
 }
 
-.metrics-card .glowing-btn::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    opacity: 0.7;
-    filter: blur(1em);
-    transform: translateY(120%) rotateX(95deg) scale(1, 0.35);
-    background: var(--accent);
-    pointer-events: none;
-}
+.metrics-card .glowing-btn::before { display: none; }
 
-.metrics-card .glowing-btn::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    opacity: 0;
-    z-index: -1;
-    background-color: var(--accent);
-    box-shadow: 0 0 2em 0.2em var(--accent);
-    transition: opacity 100ms linear;
-}
+.metrics-card .glowing-btn::after { display: none; }
 
 .metrics-card .glowing-btn:hover {
     color: rgba(0, 0, 0, 0.8);
     text-shadow: none;
-    animation: none;
 }
 
 .metrics-card .glowing-btn:hover .glowing-txt {
@@ -424,10 +397,9 @@ main {
 
 footer {
     text-align: center;
-    padding: 1.5rem;
+    padding: 1.5rem 0; /* remove side padding bar feeling */
     margin-top: 2rem;
-    background-color: var(--component-bg);
+    background-color: var(--background); /* same as page */
     color: var(--text-secondary);
-    border-top: 1px solid var(--border-color);
     opacity: 0.8;
 }
