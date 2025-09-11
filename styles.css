@@ -21,12 +21,12 @@ body {
     background-color: var(--background);
     color: var(--text-primary);
     margin: 0;
-    padding: 1%;
+    padding: 0; /* ensure header/footer can be full-width */
     line-height: 1.6;
 }
 
 header {
-    background-color: var(--background); /* same as page, not a container */
+    background-color: var(--component-bg); /* full-width title bar with component background */
     padding: 1.5rem 0; /* remove side padding bar feeling */
     text-align: center;
     color: var(--text-primary);
