@@ -43,9 +43,10 @@ header h1 {
 }
 
 main {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 1rem;
+    width: 98%;
+    max-width: none;
+    margin: 1rem auto;
+    padding: 0;
 }
 
 .dashboard-container {
@@ -294,9 +295,10 @@ main {
 
 /* Stats Cards Section - Updated to match original */
 .container {
-    max-width: 1200px;
+    width: 98%;
+    max-width: none;
     margin: 2rem auto;
-    padding: 0 1rem;
+    padding: 0;
 }
 
 .container h1 {
