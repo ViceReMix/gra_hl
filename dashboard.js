@@ -1,5 +1,31 @@
 // Dashboard.js - Trading Performance Dashboard
 
+// Watermark plugin for Chart.js
+const watermarkPlugin = {
+    id: 'watermark',
+    afterDraw(chart, args, options) {
+        const { ctx, chartArea } = chart;
+        if (!chartArea) return;
+        const text = (options && options.text) || '@Vice_Algos';
+        ctx.save();
+        ctx.globalAlpha = (options && options.opacity) != null ? options.opacity : 0.35;
+        ctx.fillStyle = (options && options.color) || '#262a33';
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'bottom';
+        // Responsive font size based on chart width
+        const size = Math.max(16, Math.floor((chartArea.right - chartArea.left) * 0.04));
+        ctx.font = `700 ${size}px Roboto, Roboto Mono, sans-serif`;
+        const pad = 12;
+        ctx.fillText(text, chartArea.right - pad, chartArea.bottom - pad);
+        ctx.restore();
+    }
+};
+
+// Register plugin globally
+if (typeof Chart !== 'undefined' && Chart.register) {
+    Chart.register(watermarkPlugin);
+}
+
 // Fetch trading data
 async function fetchTradingData() {
     try {
@@ -179,11 +205,13 @@ function updateStatCards(metrics, filter = 'total') {
         addValueClass(returnsSkew, signalsData.returns_skew);
     }
 
-    // Equity-Weighted Return (decimal in data -> convert to percentage)
+    // Equity-Weighted Return (already in percentage units; do NOT scale)
     const eqWeighted = document.getElementById('equity-weighted-return');
     if (eqWeighted && typeof signalsData.equity_weighted_return === 'number') {
-        eqWeighted.textContent = formatPercent(signalsData.equity_weighted_return * 100);
-        addValueClass(eqWeighted, signalsData.equity_weighted_return);
+        const v = signalsData.equity_weighted_return;
+        // Display directly as percentage value
+        eqWeighted.textContent = formatPercent(v);
+        addValueClass(eqWeighted, v);
     }
 }
 
