@@ -39,18 +39,9 @@ function formatPercent(num) {
 
 // Format duration in hours to readable format
 function formatDuration(hours) {
+    // Always show plain hours (no days), with one decimal
     if (hours === null || hours === undefined || isNaN(hours)) return '-';
-    if (hours < 24) {
-        return `${formatNumber(hours, 1)}h`;
-    } else {
-        const days = Math.floor(hours / 24);
-        const remainingHours = hours % 24;
-        if (remainingHours === 0) {
-            return `${days}d`;
-        } else {
-            return `${days}d ${formatNumber(remainingHours, 0)}h`;
-        }
-    }
+    return `${formatNumber(hours, 1)}h`;
 }
 
 // Add positive/negative class based on value
@@ -186,6 +177,13 @@ function updateStatCards(metrics, filter = 'total') {
     if (returnsSkew) {
         returnsSkew.textContent = formatNumber(signalsData.returns_skew);
         addValueClass(returnsSkew, signalsData.returns_skew);
+    }
+
+    // Equity-Weighted Return (decimal in data -> convert to percentage)
+    const eqWeighted = document.getElementById('equity-weighted-return');
+    if (eqWeighted && typeof signalsData.equity_weighted_return === 'number') {
+        eqWeighted.textContent = formatPercent(signalsData.equity_weighted_return * 100);
+        addValueClass(eqWeighted, signalsData.equity_weighted_return);
     }
 }
 
