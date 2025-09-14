@@ -30,6 +30,7 @@ header {
     padding: 1.5rem 0; /* remove side padding bar feeling */
     text-align: center;
     color: var(--text-primary);
+    position: relative; /* allow burger positioning */
 }
 
 header h1 {
@@ -43,40 +44,72 @@ header h1 {
 }
 
 /* Top Navigation */
-.top-nav {
-    background-color: var(--component-bg);
-    border-bottom: 1px solid var(--border-color);
+/* Burger button */
+.burger-btn {
+    position: absolute;
+    left: 12px;
+    top: 16px;
+    width: 42px;
+    height: 36px;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+}
+.burger-btn span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--text-primary);
 }
 
-.top-nav .nav-links {
-    width: 98%;
-    margin: 0 auto;
+/* Drawer navigation */
+.nav-drawer {
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 260px;
+    background: var(--component-bg);
+    border-right: 1px solid var(--border-color);
+    transform: translateX(-100%);
+    transition: transform 200ms ease-in-out;
+    padding: 72px 16px 16px; /* room for header spacing */
+}
+.nav-drawer.open {
+    transform: translateX(0);
+}
+.nav-drawer .nav-links {
     display: flex;
-    gap: 1rem;
-    padding: 0.75rem 0.5rem;
-    justify-content: center; /* center menu horizontally */
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 0.5rem;
 }
-
-.top-nav .nav-links a {
-    color: var(--text-secondary);
+.nav-drawer .nav-links a {
+    color: var(--text-primary);
     text-decoration: none;
-    padding: 0.4rem 0.75rem;
-    border: 1px solid transparent;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--border-color);
     border-radius: 6px;
     transition: all 0.2s ease;
 }
-
-.top-nav .nav-links a:hover {
+.nav-drawer .nav-links a:hover,
+.nav-drawer .nav-links a.active {
+    background: var(--text-primary);
     color: var(--accent);
-    background: var(--text-primary); /* light background */
     border-color: var(--text-primary);
 }
 
-.top-nav .nav-links a.active {
-    color: var(--accent);           /* accent text */
-    background: var(--text-primary);/* white-ish button */
-    border-color: var(--text-primary);
+/* Backdrop when drawer is open */
+.nav-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 999;
 }
 
 main {
