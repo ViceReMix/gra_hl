@@ -68,14 +68,15 @@ header h1 {
 }
 
 .top-nav .nav-links a:hover {
-    color: var(--text-primary);
-    background: #3E404C;
+    color: var(--accent);
+    background: var(--text-primary); /* light background */
+    border-color: var(--text-primary);
 }
 
 .top-nav .nav-links a.active {
-    color: var(--component-bg);
-    background: var(--accent);
-    border-color: var(--accent);
+    color: var(--accent);           /* accent text */
+    background: var(--text-primary);/* white-ish button */
+    border-color: var(--text-primary);
 }
 
 main {
