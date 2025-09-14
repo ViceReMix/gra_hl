@@ -8,15 +8,16 @@ const watermarkPlugin = {
         if (!chartArea) return;
         const text = (options && options.text) || '@Vice_Algos';
         ctx.save();
-        ctx.globalAlpha = (options && options.opacity) != null ? options.opacity : 0.35;
-        ctx.fillStyle = (options && options.color) || '#262a33';
-        ctx.textAlign = 'right';
-        ctx.textBaseline = 'bottom';
+        ctx.globalAlpha = (options && options.opacity) != null ? options.opacity : 0.20;
+        ctx.fillStyle = (options && options.color) || '#e5f7ef';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
         // Responsive font size based on chart width
-        const size = Math.max(16, Math.floor((chartArea.right - chartArea.left) * 0.04));
+        const size = Math.max(18, Math.floor((chartArea.right - chartArea.left) * 0.06));
         ctx.font = `700 ${size}px Roboto, Roboto Mono, sans-serif`;
-        const pad = 12;
-        ctx.fillText(text, chartArea.right - pad, chartArea.bottom - pad);
+        const cx = (chartArea.left + chartArea.right) / 2;
+        const cy = (chartArea.top + chartArea.bottom) / 2;
+        ctx.fillText(text, cx, cy);
         ctx.restore();
     }
 };
@@ -209,8 +210,8 @@ function updateStatCards(metrics, filter = 'total') {
     const eqWeighted = document.getElementById('equity-weighted-return');
     if (eqWeighted && typeof signalsData.equity_weighted_return === 'number') {
         const v = signalsData.equity_weighted_return;
-        // Display directly as percentage value
-        eqWeighted.textContent = formatPercent(v);
+        // Display with 4 decimal places for higher precision
+        eqWeighted.textContent = `${formatNumber(v, 4)}%`;
         addValueClass(eqWeighted, v);
     }
 }
