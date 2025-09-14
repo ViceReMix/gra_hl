@@ -1,5 +1,5 @@
 {
-  "last_updated": "2025-09-14 11:50:00",
+  "last_updated": "2025-09-14 12:50:00",
   "strategies": {
     "Signals": {
       "total": {
@@ -92,6 +92,18 @@
     }
   },
   "individual_trades": [
+    {
+      "trade_id": "STXUSDT_2c319183",
+      "symbol": "STXUSDT",
+      "position_side": "LONG",
+      "timestamp_exit": "2025-09-14T12:00:13.382166+00:00",
+      "pnl_percentage": 4.674874427701465,
+      "max_pnl": 8.533828547057148,
+      "min_pnl": -1.1460380473233307,
+      "duration_hours": 143.79043294333334,
+      "leverage": 1.0,
+      "position_size_percent_equity": 2.977517189209193
+    },
     {
       "trade_id": "SYRUPUSDT_a54c1e87",
       "symbol": "SYRUPUSDT",
