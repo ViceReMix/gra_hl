@@ -54,6 +54,7 @@ header h1 {
     display: flex;
     gap: 1rem;
     padding: 0.75rem 0.5rem;
+    justify-content: center; /* center menu horizontally */
     flex-wrap: wrap;
 }
 
