@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Learn | Vice Algos</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Learn About Vice Algos</h1>
+    <p id="last-updated">Educational resources and methodology overview</p>
+  </header>
+
+  <!-- Shared Top Navigation -->
+  <nav class="top-nav" aria-label="Primary">
+    <div class="nav-links"></div>
+  </nav>
+
+  <main>
+    <div class="dashboard-container">
+      <div class="metrics-card">
+        <h2>Overview</h2>
+        <p>
+          This page will host documentation links, methodology notes, and guides about
+          how the public metrics are computed and how strategies are designed.
+        </p>
+      </div>
+
+      <div class="metrics-card">
+        <h2>Planned Sections</h2>
+        <ul>
+          <li>Data sourcing and sanitization for GitHub Pages</li>
+          <li>Risk management basics and interpretation of the dashboard</li>
+          <li>Glossary of common terms (Sharpe, Calmar, MAE/MFE)</li>
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; Vice Algos are made with Love. All rights reserved.</p>
+  </footer>
+
+  <script src="nav.js"></script>
+  <script>
+    if (typeof renderTopNav === 'function') {
+      renderTopNav('learn');
+    }
+  </script>
+</body>
+</html>
