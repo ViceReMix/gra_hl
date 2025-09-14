@@ -10,8 +10,6 @@ function renderTopNav(activeKey) {
     { key: 'home', label: 'Home', href: 'index.html' },
     { key: 'learn', label: 'Learn', href: 'Learn.html' },
     { key: 'contact', label: 'Contact', href: 'Contact.html' },
-    // Optional links to your internal dashboards
-    { key: 'tickers', label: 'Tickers', href: '/data/charts/ticker_dashboard.html' },
   ];
 
   navRoot.innerHTML = items.map(it => {
