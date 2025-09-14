@@ -8,14 +8,18 @@
 </head>
 <body>
   <header>
+    <button class="burger-btn" aria-label="Open menu" aria-controls="site-drawer" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
     <h1>Contact</h1>
     <p id="last-updated">Get in touch</p>
   </header>
 
-  <!-- Shared Top Navigation -->
-  <nav class="top-nav" aria-label="Primary">
+  <!-- Drawer Navigation -->
+  <nav id="site-drawer" class="nav-drawer" aria-label="Primary">
     <div class="nav-links"></div>
   </nav>
+  <div class="nav-backdrop" hidden></div>
 
   <main>
     <div class="dashboard-container">
