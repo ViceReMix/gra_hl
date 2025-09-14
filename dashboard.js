@@ -8,16 +8,16 @@ const watermarkPlugin = {
         if (!chartArea) return;
         const text = (options && options.text) || '@Vice_Algos';
         ctx.save();
-        ctx.globalAlpha = (options && options.opacity) != null ? options.opacity : 0.20;
+        // Lower opacity for subtlety
+        ctx.globalAlpha = (options && options.opacity) != null ? options.opacity : 0.12;
         ctx.fillStyle = (options && options.color) || '#e5f7ef';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        // Responsive font size based on chart width
-        const size = Math.max(18, Math.floor((chartArea.right - chartArea.left) * 0.06));
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'bottom';
+        // Smaller, responsive font size based on chart width
+        const size = Math.max(14, Math.floor((chartArea.right - chartArea.left) * 0.035));
         ctx.font = `700 ${size}px Roboto, Roboto Mono, sans-serif`;
-        const cx = (chartArea.left + chartArea.right) / 2;
-        const cy = (chartArea.top + chartArea.bottom) / 2;
-        ctx.fillText(text, cx, cy);
+        const pad = 10;
+        ctx.fillText(text, chartArea.right - pad, chartArea.bottom - pad);
         ctx.restore();
     }
 };
