@@ -12,6 +12,11 @@
         <p id="last-updated">Loading...</p>
     </header>
     
+    <!-- Shared Top Navigation -->
+    <nav class="top-nav" aria-label="Primary">
+        <div class="nav-links"></div>
+    </nav>
+    
     <main>
         <div class="dashboard-container">
             <div class="metrics-card">
@@ -175,6 +180,13 @@
     </footer>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="nav.js"></script>
     <script src="dashboard.js"></script>
+    <script>
+      // highlight Home in the nav
+      if (typeof renderTopNav === 'function') {
+        renderTopNav('home');
+      }
+    </script>
 </body>
 </html>
