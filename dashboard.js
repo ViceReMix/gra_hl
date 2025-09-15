@@ -189,8 +189,10 @@ function updateStatCards(metrics, filter = 'total') {
         if (signalsData.kelly_criterion === 0) {
             kellyCriterion.textContent = '0%';
         } else {
-            kellyCriterion.textContent = formatPercent(signalsData.kelly_criterion);
-            addValueClass(kellyCriterion, signalsData.kelly_criterion);
+            // kelly_criterion is exported as a fraction [0,1]; display as percentage
+            const kellyPct = signalsData.kelly_criterion * 100;
+            kellyCriterion.textContent = formatPercent(kellyPct);
+            addValueClass(kellyCriterion, kellyPct);
         }
     }
     
