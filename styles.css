@@ -59,12 +59,13 @@ header h1 {
 }
 
 .top-nav__inner {
-    max-width: 1200px;
+    max-width: 100%; /* span full width so logo sits closer to left edge */
     margin: 0 auto;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 0.75rem; /* slightly smaller side padding to push logo further left */
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    align-items: center; /* vertical centering */
+    justify-content: flex-start;
+    position: relative; /* enable absolute centering for the menu */
 }
 
 .top-nav__left { display: flex; align-items: center; gap: 0.75rem; }
@@ -82,7 +83,7 @@ header h1 {
 }
 .top-nav__wordmark { display: none; }
 
-.top-nav__center { flex: 1; display: flex; justify-content: center; }
+.top-nav__center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; justify-content: center; }
 
 /* Skewed menu inspired by CodePen (variables converted to CSS custom properties) */
 .skew-menu { text-align: center; }
