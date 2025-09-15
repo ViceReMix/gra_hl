@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vice Algos — Nostr Articles</title>
+  <title>Vice Algos — Research</title>
   <link rel="stylesheet" href="styles.css" />
   <script src="nav.js" defer></script>
   <style>
@@ -11,7 +11,7 @@
     /* Page-specific minimal styles that reuse existing CSS variables */
     .articles-header { background-color: var(--component-bg); padding: 1.25rem 0; text-align: center; color: var(--text-primary); }
     .articles-header h1 { font-size: 2rem; margin: 0; }
-    .articles-subtitle { color: var(--text-secondary); opacity: 0.9; margin-top: 0.25rem; font-size: 0.9rem; }
+    .articles-subtitle { color: var(--text-secondary); opacity: 0.9; margin-top: 0.25rem; font-size: 0.95rem; }
 
     .container { width: 98%; max-width: none; margin: 1rem auto; }
 
@@ -26,7 +26,8 @@
     @media (max-width: 640px) { .articles-grid { grid-template-columns: 1fr; } }
 
     .article-card { background: var(--background); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; min-height: 280px; }
-    .article-thumb { width: 100%; height: 180px; object-fit: cover; background: #333; }
+    /* 4:3 cover images for articles */
+    .article-thumb { width: 100%; aspect-ratio: 4 / 3; height: auto; object-fit: cover; background: #333; }
     .article-body { padding: 0.9rem; display: flex; flex-direction: column; gap: 0.35rem; flex: 1 1 auto; }
     .article-title { font-weight: 600; color: var(--text-primary); font-size: 1.0rem; line-height: 1.3; }
     .article-meta { color: var(--text-secondary); font-size: 0.8rem; }
@@ -69,8 +70,13 @@
 </head>
 <body>
   <header class="articles-header">
-    <h1>Vice Algos — Nostr Articles</h1>
-    <div class="articles-subtitle">Client-side reader for NIP‑23 (kind 30023) long‑form notes</div>
+    <h1>Vice Algos — Research</h1>
+    <div class="articles-subtitle">
+      Research articles are stored on Nostr relays — Follow me here:
+      <a href="https://njump.me/npub1rzwlqdnah3v5htggawpvnchnh46nsmygtxft5tfzart83ate9whsjy6xqx" target="_blank" rel="noopener noreferrer" style="color: var(--accent); text-decoration: none;">
+        npub1rzwlqd…sj6xqx
+      </a>
+    </div>
   </header>
 
   <main class="container">
