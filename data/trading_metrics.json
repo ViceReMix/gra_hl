@@ -1,5 +1,5 @@
 {
-  "last_updated": "2025-09-14 23:50:00",
+  "last_updated": "2025-09-15 00:50:00",
   "strategies": {
     "Signals": {
       "total": {
@@ -92,6 +92,18 @@
     }
   },
   "individual_trades": [
+    {
+      "trade_id": "FTTUSDT_397155de",
+      "symbol": "FTTUSDT",
+      "position_side": "LONG",
+      "timestamp_exit": "2025-09-15T00:00:11.251096+00:00",
+      "pnl_percentage": -1.7346218112955318,
+      "max_pnl": 5.086074801967621,
+      "min_pnl": -3.950412925256111,
+      "duration_hours": 47.79098496666667,
+      "leverage": 1.0,
+      "position_size_percent_equity": 3.002941536131478
+    },
     {
       "trade_id": "STXUSDT_2c319183",
       "symbol": "STXUSDT",
