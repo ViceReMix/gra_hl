@@ -394,10 +394,14 @@
     // Back to top behavior
     const backBtn = document.getElementById('backToTop');
     const showAfter = 400; // px scrolled
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > showAfter) backBtn.classList.add('show');
+    const getScrollTop = () => (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0);
+    const updateBackBtn = () => {
+      if (getScrollTop() > showAfter) backBtn.classList.add('show');
       else backBtn.classList.remove('show');
-    });
+    };
+    window.addEventListener('scroll', updateBackBtn, { passive: true });
+    window.addEventListener('resize', updateBackBtn);
+    document.addEventListener('DOMContentLoaded', updateBackBtn);
     backBtn.addEventListener('click', () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
