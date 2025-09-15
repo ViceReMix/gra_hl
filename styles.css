@@ -8,6 +8,9 @@
     --accent: #43ffaf;             /* accent / positive */
     --border-color: #1f232c;       /* subtle borders */
     --error: #d22a2a;              /* negative */
+    /* nav skew menu config */
+    --skew-angle: 25deg;
+    --menu-radius: 7px;
 }
 
 * {
@@ -41,6 +44,8 @@ header h1 {
 #last-updated {
     font-style: italic;
     opacity: 0.8;
+    text-align: center;
+    margin-bottom: 0.75rem;
 }
 
 /* Top navigation (reusable) */
@@ -64,12 +69,34 @@ header h1 {
 
 .top-nav__left { display: flex; align-items: center; gap: 0.75rem; }
 
-.top-nav__logo { height: 36px; width: auto; display: block; }
+.top-nav__logo { height: 28px; width: auto; display: block; }
 .top-nav__logo-link { display: inline-flex; align-items: center; }
+.top-nav__wordmark { margin-left: 0.5rem; font-weight: 700; font-size: 0.95rem; color: var(--accent); letter-spacing: 0.02em; }
 
-.top-nav__menu { list-style: none; display: flex; gap: 1rem; }
-.top-nav__link { color: var(--text-secondary); text-decoration: none; font-weight: 500; }
-.top-nav__link:hover { color: var(--text-primary); }
+.top-nav__center { flex: 1; display: flex; justify-content: center; }
+
+/* Skewed menu inspired by CodePen (variables converted to CSS custom properties) */
+.skew-menu { text-align: center; }
+.skew-menu ul { display: inline-block; margin: 0; padding: 0; list-style: none; transform: skew(calc(-1 * var(--skew-angle))); }
+.skew-menu ul li { background: #fff; float: left; border-right: 1px solid #eee; box-shadow: 0 1px 1px rgba(0,0,0,0.1); text-transform: uppercase; color: #555; font-weight: 700; transition: all 0.3s linear; }
+.skew-menu ul li:first-child { border-radius: var(--menu-radius) 0 0 var(--menu-radius); }
+.skew-menu ul li:last-child { border-right: none; border-radius: 0 var(--menu-radius) var(--menu-radius) 0; }
+.skew-menu ul li:hover { background: #eee; color: var(--accent); }
+.skew-menu ul li a { display: block; padding: 0.6rem 1.2rem; color: inherit; text-decoration: none; transform: skew(var(--skew-angle)); }
+
+/* Harmonize with dark theme: invert colors inside nav container */
+.top-nav .skew-menu ul li { background: var(--component-bg); color: var(--text-secondary); border-right: 1px solid var(--border-color); box-shadow: none; }
+.top-nav .skew-menu ul li:hover { background: #3E404C; color: var(--accent); }
+.top-nav .skew-menu ul li a { padding: 0.55rem 1rem; }
+
+/* Responsive: simplify skew on small screens */
+@media (max-width: 720px) {
+  .top-nav__inner { flex-wrap: wrap; gap: 0.5rem; }
+  .top-nav__center { order: 2; width: 100%; }
+  .skew-menu ul { transform: none; display: flex; flex-wrap: wrap; justify-content: center; }
+  .skew-menu ul li { border-radius: 6px; margin: 0.25rem; border-right: 1px solid var(--border-color); }
+  .skew-menu ul li a { transform: none; padding: 0.5rem 0.8rem; }
+}
 
 /* When nav is present, we can hide the old page title, but keep last-updated */
 body .top-nav ~ header h1 { display: none; }
