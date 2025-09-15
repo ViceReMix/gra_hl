@@ -74,11 +74,8 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.8/dist/purify.min.js"></script>
 
-  <!-- Nostr tools (browser ESM) -->
-  <script type="module">
-    // Use unpkg with ?module for robust ESM delivery on GitHub Pages
-    import { SimplePool } from 'https://unpkg.com/nostr-tools@2.7.2/pool.js?module';
-    import * as nip19 from 'https://unpkg.com/nostr-tools@2.7.2/nip19.js?module';
+  <!-- Native Nostr client (no external modules) -->
+  <script>
 
     const NPUB = 'npub1rzwlqdnah3v5htggawpvnchnh46nsmygtxft5tfzart83ate9whsjy6xqx';
     const RELAYS = [
@@ -109,18 +106,52 @@
       return Array.from(u8).map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
-    function npubToHex(npub) {
-      try {
-        const dec = nip19.decode(npub);
-        const d = dec?.data;
-        if (!d) return null;
-        // nostr-tools may return string or Uint8Array depending on env/version
-        return typeof d === 'string' ? d : u8ToHex(d);
-      } catch (e) {
-        console.error('npub decode error:', e);
-        return null;
+    // --- Minimal bech32 decoder for npub (NIP-19) ---
+    // Based on BIP-0173 reference, simplified for browser use
+    (function(){
+      const CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
+      const CHARKEY = Object.fromEntries([...CHARSET].map((c,i)=>[c,i]));
+      function bech32Decode(s){
+        s = s.toLowerCase();
+        const pos = s.lastIndexOf('1');
+        if (pos < 1) throw new Error('invalid bech32');
+        const hrp = s.slice(0,pos);
+        const data = s.slice(pos+1);
+        const vals = [];
+        for (const ch of data){
+          if (!(ch in CHARKEY)) throw new Error('invalid char');
+          vals.push(CHARKEY[ch]);
+        }
+        // strip checksum (last 6)
+        if (vals.length < 6) throw new Error('too short');
+        return { hrp, data: vals.slice(0,-6) };
       }
-    }
+      function convertBits(data, from, to, pad=true){
+        let acc=0, bits=0, ret=[];
+        const maxv=(1<<to)-1;
+        for (const value of data){
+          if (value<0 || (value>>from)!==0) return null;
+          acc=(acc<<from)|value;
+          bits+=from;
+          while(bits>=to){
+            bits-=to; ret.push((acc>>bits)&maxv);
+          }
+        }
+        if (pad){
+          if (bits>0) ret.push((acc<<(to-bits))&maxv);
+        } else if (bits>=from || ((acc<<(to-bits))&maxv)) return null;
+        return ret;
+      }
+      window.npubToHex = function(npub){
+        try{
+          if (!npub.startsWith('npub')) return null;
+          const { data } = bech32Decode(npub);
+          const bytes = convertBits(data,5,8,false);
+          if (!bytes) return null;
+          return u8ToHex(Uint8Array.from(bytes));
+        }catch(e){ console.error('npub decode error:', e); return null; }
+      };
+    })();
 
     function tagValue(ev, name) {
       const t = ev.tags.find(t => t[0] === name);
@@ -271,10 +302,39 @@
       return null;
     }
 
-    function withTimeout(promise, ms) {
+    // --- Nostr over raw WebSocket (NIP-01) ---
+    function wsList(relayUrl, filters, timeoutMs) {
       return new Promise((resolve) => {
-        const t = setTimeout(() => resolve([]), ms);
-        promise.then((v) => { clearTimeout(t); resolve(v); }).catch(() => { clearTimeout(t); resolve([]); });
+        const ws = new WebSocket(relayUrl);
+        const subId = 'sub_' + Math.random().toString(36).slice(2,10);
+        const results = [];
+        let finished = false;
+
+        const done = () => {
+          if (finished) return; finished = true;
+          try { ws.readyState === 1 && ws.send(JSON.stringify(['CLOSE', subId])); } catch {}
+          try { ws.close(); } catch {}
+          resolve(results);
+        };
+
+        const timer = setTimeout(done, timeoutMs);
+        ws.onopen = () => {
+          try {
+            ws.send(JSON.stringify(['REQ', subId, ...filters]));
+          } catch { /* ignore */ }
+        };
+        ws.onmessage = (msg) => {
+          try {
+            const data = JSON.parse(msg.data);
+            if (data[0] === 'EVENT' && data[1] === subId) {
+              results.push(data[2]);
+            } else if (data[0] === 'EOSE' && data[1] === subId) {
+              clearTimeout(timer); done();
+            }
+          } catch { /* ignore */ }
+        };
+        ws.onerror = () => { clearTimeout(timer); done(); };
+        ws.onclose = () => { clearTimeout(timer); done(); };
       });
     }
 
@@ -290,27 +350,19 @@
         if (!author) throw new Error('Invalid npub');
 
         console.log('Author (hex):', author);
-        const pool = new SimplePool();
         elRelayCount.textContent = `Relays: ${RELAYS.length}`;
 
-        // Query per-relay to get visibility on which ones respond
+        // Query per-relay using raw WebSocket
         const perRelay = await Promise.allSettled(
           RELAYS.map(async (r) => {
-            try {
-              // Fetch both with per-relay timeout
-              const [ev30023, ev1] = await Promise.all([
-                withTimeout(pool.list([r], [{ kinds: [30023], authors: [author], limit: 100 }]), RELAY_TIMEOUT_MS),
-                withTimeout(pool.list([r], [{ kinds: [1], authors: [author], limit: 200 }]), RELAY_TIMEOUT_MS)
-              ]);
-              console.log(`Relay ${r} returned ${ev30023.length} (30023) and ${ev1.length} (kind1)`);
-              // Attach a marker kind property to distinguish later
-              ev30023.forEach(e => e.__kind = 30023);
-              ev1.forEach(e => e.__kind = 1);
-              return [...ev30023, ...ev1];
-            } catch (e) {
-              console.warn(`Relay ${r} error`, e);
-              return [];
-            }
+            const [ev30023, ev1] = await Promise.all([
+              wsList(r, [{ kinds: [30023], authors: [author], limit: 100 }], RELAY_TIMEOUT_MS),
+              wsList(r, [{ kinds: [1], authors: [author], limit: 200 }], RELAY_TIMEOUT_MS)
+            ]);
+            console.log(`Relay ${r} returned ${ev30023.length} (30023) and ${ev1.length} (kind1)`);
+            ev30023.forEach(e => e.__kind = 30023);
+            ev1.forEach(e => e.__kind = 1);
+            return [...ev30023, ...ev1];
           })
         );
         const events = perRelay.flatMap(x => (x.status === 'fulfilled' ? x.value : []));
@@ -360,7 +412,7 @@
           renderList(merged);
         }
 
-        pool.close(RELAYS);
+        // no pool to close in native client
       } catch (err) {
         console.error('Relay load error:', err);
         elStatus.className = 'error';
