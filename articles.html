@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vice Algos — Nostr Articles</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Page-specific minimal styles that reuse existing CSS variables */
+    .articles-header { background-color: var(--component-bg); padding: 1.25rem 0; text-align: center; color: var(--text-primary); }
+    .articles-header h1 { font-size: 2rem; margin: 0; }
+    .articles-subtitle { color: var(--text-secondary); opacity: 0.9; margin-top: 0.25rem; font-size: 0.9rem; }
+
+    .container { width: 98%; max-width: none; margin: 1rem auto; }
+
+    .controls { display: flex; gap: 0.75rem; justify-content: center; align-items: center; margin-bottom: 1rem; }
+    .controls .pill { background: var(--component-bg); border: 1px solid var(--border-color); border-radius: 999px; padding: 0.35rem 0.75rem; color: var(--text-secondary); font-size: 0.8rem; }
+
+    .stats-section { background-color: var(--component-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.25rem; }
+
+    .articles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+
+    .article-card { background: var(--background); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
+    .article-thumb { width: 100%; height: 140px; object-fit: cover; background: #333; }
+    .article-body { padding: 0.9rem; display: flex; flex-direction: column; gap: 0.35rem; }
+    .article-title { font-weight: 600; color: var(--text-primary); font-size: 1.0rem; line-height: 1.3; }
+    .article-meta { color: var(--text-secondary); font-size: 0.8rem; }
+    .article-summary { color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.25rem; }
+    .article-actions { margin-top: 0.5rem; display: flex; gap: 0.5rem; }
+    .btn { background: var(--accent); color: var(--component-bg); border: 1px solid var(--accent); border-radius: 6px; padding: 0.4rem 0.7rem; cursor: pointer; font-weight: 500; }
+    .btn.secondary { background: var(--component-bg); color: var(--text-primary); border: 1px solid var(--border-color); text-decoration: none; display: inline-block; }
+
+    .detail-panel { margin-top: 1.25rem; background: var(--component-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.25rem; }
+    .detail-title { font-size: 1.4rem; margin-bottom: 0.5rem; }
+    .detail-meta { color: var(--text-secondary); margin-bottom: 1rem; }
+    .detail-cover { width: 100%; max-height: 360px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-color); margin: 0.25rem 0 1rem; }
+    .detail-content { line-height: 1.7; }
+    .detail-content h1, .detail-content h2, .detail-content h3 { margin: 0.9rem 0 0.4rem; }
+    .detail-content p { margin: 0.4rem 0; }
+    .detail-content code { background: #2f3340; padding: 0 0.25rem; border-radius: 4px; }
+    .detail-content pre { background: #2f3340; padding: 0.75rem; border-radius: 6px; overflow-x: auto; }
+
+    .loading, .error { text-align: center; color: var(--text-secondary); padding: 0.5rem; }
+    .error { color: var(--error); }
+  </style>
+</head>
+<body>
+  <header class="articles-header">
+    <h1>Vice Algos — Nostr Articles</h1>
+    <div class="articles-subtitle">Client-side reader for NIP‑23 (kind 30023) long‑form notes</div>
+  </header>
+
+  <main class="container">
+    <div class="controls">
+      <span class="pill" id="relay-count">Relays: —</span>
+      <span class="pill" id="article-count">Articles: —</span>
+      <a href="index.html" class="pill" style="text-decoration:none">← Back to Dashboard</a>
+    </div>
+
+    <section class="stats-section">
+      <div id="status" class="loading">Loading from relays…</div>
+      <div class="articles-grid" id="articles-grid" hidden></div>
+
+      <div id="detail" class="detail-panel" hidden>
+        <div class="detail-title" id="detail-title"></div>
+        <div class="detail-meta" id="detail-meta"></div>
+        <img id="detail-cover" class="detail-cover" alt="cover" hidden />
+        <div id="detail-content" class="detail-content"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Markdown renderer & sanitizer -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.8/dist/purify.min.js"></script>
+
+  <!-- Nostr tools (browser ESM) -->
+  <script type="module">
+    import { SimplePool, nip19 } from 'https://esm.sh/nostr-tools@2.7.2';
+
+    const NPUB = 'npub1rzwlqdnah3v5htggawpvnchnh46nsmygtxft5tfzart83ate9whsjy6xqx';
+    const RELAYS = [
+      'wss://relay.damus.io',
+      'wss://nos.lol',
+      'wss://relay.primal.net',
+      'wss://relay.nostr.band'
+    ];
+    const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes
+    const CACHE_KEY = 'nostr_articles_cache_v1';
+
+    const elStatus = document.getElementById('status');
+    const elGrid = document.getElementById('articles-grid');
+    const elRelayCount = document.getElementById('relay-count');
+    const elArticleCount = document.getElementById('article-count');
+
+    const elDetail = document.getElementById('detail');
+    const elDetailTitle = document.getElementById('detail-title');
+    const elDetailMeta = document.getElementById('detail-meta');
+    const elDetailCover = document.getElementById('detail-cover');
+    const elDetailContent = document.getElementById('detail-content');
+
+    function npubToHex(npub) {
+      try { return nip19.decode(npub).data; } catch { return null; }
+    }
+
+    function tagValue(ev, name) {
+      const t = ev.tags.find(t => t[0] === name);
+      return t ? t[1] : undefined;
+    }
+
+    function toDateTime(ts) {
+      const d = new Date((ts || 0) * 1000);
+      return d.toLocaleString();
+    }
+
+    function sanitizeHTML(html) {
+      return DOMPurify.sanitize(html, { USE_PROFILES: { html: true } });
+    }
+
+    function renderList(events) {
+      elGrid.innerHTML = '';
+      for (const ev of events) {
+        const title = tagValue(ev, 'title') || '(untitled)';
+        const summary = tagValue(ev, 'summary') || '';
+        const image = tagValue(ev, 'image');
+        const created = toDateTime(ev.created_at);
+
+        const card = document.createElement('div');
+        card.className = 'article-card';
+
+        const img = document.createElement('img');
+        img.className = 'article-thumb';
+        if (image) { img.src = image; } else { img.style.display = 'none'; }
+        card.appendChild(img);
+
+        const body = document.createElement('div');
+        body.className = 'article-body';
+
+        const h = document.createElement('div');
+        h.className = 'article-title';
+        h.textContent = title;
+
+        const meta = document.createElement('div');
+        meta.className = 'article-meta';
+        meta.textContent = created;
+
+        const sum = document.createElement('div');
+        sum.className = 'article-summary';
+        sum.textContent = summary;
+
+        const actions = document.createElement('div');
+        actions.className = 'article-actions';
+
+        const viewBtn = document.createElement('button');
+        viewBtn.className = 'btn';
+        viewBtn.textContent = 'Read';
+        viewBtn.addEventListener('click', () => showDetail(ev));
+
+        const externalBtn = document.createElement('a');
+        externalBtn.className = 'btn secondary';
+        externalBtn.textContent = 'Raw';
+        externalBtn.href = `https://njump.me/${ev.id}`; // generic nostr deep link
+        externalBtn.target = '_blank';
+        externalBtn.rel = 'noopener noreferrer';
+
+        actions.appendChild(viewBtn);
+        actions.appendChild(externalBtn);
+
+        body.appendChild(h);
+        body.appendChild(meta);
+        if (summary) body.appendChild(sum);
+        body.appendChild(actions);
+        card.appendChild(body);
+
+        elGrid.appendChild(card);
+      }
+      elGrid.hidden = false;
+      elArticleCount.textContent = `Articles: ${events.length}`;
+    }
+
+    function showDetail(ev) {
+      const title = tagValue(ev, 'title') || '(untitled)';
+      const image = tagValue(ev, 'image');
+      const created = toDateTime(ev.created_at);
+
+      elDetailTitle.textContent = title;
+      elDetailMeta.textContent = created;
+
+      if (image) {
+        elDetailCover.src = image;
+        elDetailCover.hidden = false;
+      } else {
+        elDetailCover.hidden = true;
+      }
+
+      const md = ev.content || '';
+      const html = marked.parse(md, { breaks: true, gfm: true });
+      elDetailContent.innerHTML = sanitizeHTML(html);
+      elDetail.hidden = false;
+      elDetail.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function saveCache(data) {
+      const payload = { t: Date.now(), data };
+      try { localStorage.setItem(CACHE_KEY, JSON.stringify(payload)); } catch {}
+    }
+
+    function loadCache() {
+      try {
+        const raw = localStorage.getItem(CACHE_KEY);
+        if (!raw) return null;
+        const { t, data } = JSON.parse(raw);
+        if (Date.now() - t < CACHE_TTL_MS) return data;
+      } catch {}
+      return null;
+    }
+
+    async function fetchEvents() {
+      const cached = loadCache();
+      if (cached && Array.isArray(cached)) {
+        elStatus.textContent = 'Loaded from cache (refreshing…)';
+        renderList(cached);
+      }
+
+      try {
+        const author = npubToHex(NPUB);
+        if (!author) throw new Error('Invalid npub');
+
+        const pool = new SimplePool();
+        elRelayCount.textContent = `Relays: ${RELAYS.length}`;
+
+        const events = await pool.list(RELAYS, [{ kinds: [30023], authors: [author], limit: 100 }]);
+        // Deduplicate by id; NIP‑23 replaceable (same d) — keep latest per d
+        const byD = new Map();
+        const plain = [];
+        for (const ev of events) {
+          const d = tagValue(ev, 'd');
+          if (d) {
+            const existing = byD.get(d);
+            if (!existing || (ev.created_at || 0) > (existing.created_at || 0)) byD.set(d, ev);
+          } else {
+            plain.push(ev);
+          }
+        }
+        const merged = [...byD.values(), ...plain]
+          .sort((a, b) => (b.created_at || 0) - (a.created_at || 0));
+
+        saveCache(merged);
+        elStatus.style.display = 'none';
+        renderList(merged);
+
+        pool.close(RELAYS);
+      } catch (err) {
+        console.error(err);
+        elStatus.className = 'error';
+        elStatus.textContent = 'Failed to load from relays';
+      }
+    }
+
+    fetchEvents();
+  </script>
+</body>
+</html>
