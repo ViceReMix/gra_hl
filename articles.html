@@ -6,7 +6,7 @@
   <title>Vice Algos — Nostr Articles</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
-    html { scroll-behavior: smooth; }
+    
     /* Page-specific minimal styles that reuse existing CSS variables */
     .articles-header { background-color: var(--component-bg); padding: 1.25rem 0; text-align: center; color: var(--text-primary); }
     .articles-header h1 { font-size: 2rem; margin: 0; }
@@ -63,31 +63,10 @@
     .loading, .error { text-align: center; color: var(--text-secondary); padding: 0.5rem; }
     .error { color: var(--error); }
 
-    /* Back to top button */
-    .back-to-top {
-      position: fixed;
-      right: 1rem;
-      bottom: 1.25rem;
-      background: var(--accent);
-      color: var(--component-bg);
-      border: 1px solid var(--accent);
-      border-radius: 999px;
-      padding: 0.6rem 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.35);
-      transition: opacity 0.2s ease, transform 0.2s ease;
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: auto;
-      z-index: 999;
-    }
-    /* Hover effect for feedback */
-    .back-to-top:hover { transform: translateY(-2px); }
+    
   </style>
 </head>
 <body>
-  <a id="top"></a>
   <header class="articles-header">
     <h1>Vice Algos — Nostr Articles</h1>
     <div class="articles-subtitle">Client-side reader for NIP‑23 (kind 30023) long‑form notes</div>
@@ -113,8 +92,7 @@
     </section>
   </main>
 
-  <!-- Back to Top Button (anchor link, no JS required) -->
-  <a href="#top" id="backToTop" class="back-to-top" aria-label="Return to top">Top ↑</a>
+  
 
   <!-- Markdown renderer & sanitizer -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
