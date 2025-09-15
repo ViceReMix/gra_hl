@@ -30,7 +30,7 @@ body {
 
 header {
     background-color: var(--component-bg); /* full-width title bar with component background */
-    padding: 1.25rem 0; /* slightly reduced height for a tighter header */
+    padding: 0.25rem 0; /* much tighter header since H1 is hidden */
     text-align: center;
     color: var(--text-primary);
     position: relative; /* allow burger positioning */
@@ -59,7 +59,7 @@ header h1 {
 .top-nav__inner {
     max-width: 1200px; /* centered content with breathing room on both sides */
     margin: 0 auto;
-    padding: 0.75rem 1.25rem; /* add some space on the left */
+    padding: 0.5rem 1.25rem; /* slightly reduced vertical padding */
     display: flex;
     align-items: center; /* vertical centering */
     justify-content: flex-start;
@@ -109,20 +109,20 @@ header h1 {
 /* When nav is present, we can hide the old page title, but keep last-updated */
 body .top-nav ~ header h1 { display: none; }
 
-/* Provide breathing room below sticky nav if the page starts with header */
-.top-nav + header { padding-top: 0.75rem; }
+/* Remove extra spacer below nav */
+.top-nav + header { padding-top: 0; }
 
 main {
     width: 98%;
     max-width: none;
-    margin: 1rem auto;
+    margin: 0.5rem auto; /* tighter top spacing */
     padding: 0;
 }
 
 .dashboard-container {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 1.5rem; /* slightly reduced vertical gaps between blocks */
 }
 
 /* Glowing Cyberpunk Button */
