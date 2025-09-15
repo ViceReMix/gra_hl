@@ -5,8 +5,7 @@
   const cfg = (window.NAV_CONFIG || {});
   const items = Array.isArray(cfg.items) && cfg.items.length ? cfg.items : [
     { label: 'Dashboard', href: 'index.html' },
-    { label: 'Articles', href: 'articles.html' },
-    { label: 'GitHub', href: 'https://github.com/ViceOnChain', target: '_blank' },
+    { label: 'Research', href: 'articles.html' },
     { label: 'Hyperliquid', href: 'https://app.hyperliquid.xyz/vaults/0xac2322fe93c6b79f1178cfe77bc732f729bcb606', target: '_blank' }
   ];
 
@@ -18,22 +17,17 @@
   inner.className = 'top-nav__inner';
   nav.appendChild(inner);
 
-  // left: logo + wordmark
+  // left: logo only (accent-colored via CSS mask)
   const left = document.createElement('div');
   left.className = 'top-nav__left';
   const logoLink = document.createElement('a');
   logoLink.className = 'top-nav__logo-link';
   logoLink.href = cfg.logoHref || 'index.html';
-  const img = document.createElement('img');
-  img.src = 'Vice_Logo.svg';
-  img.alt = 'Vice Algos';
-  img.className = 'top-nav__logo';
-  logoLink.appendChild(img);
-  const word = document.createElement('span');
-  word.className = 'top-nav__wordmark';
-  word.textContent = 'Vice Algos';
+  const logoMask = document.createElement('span');
+  logoMask.className = 'top-nav__logo-mask';
+  logoMask.setAttribute('aria-label', 'Vice Algos');
+  logoLink.appendChild(logoMask);
   left.appendChild(logoLink);
-  left.appendChild(word);
 
   // center: skewed menu (inspiration from CodePen)
   const center = document.createElement('div');
