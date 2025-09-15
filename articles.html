@@ -76,10 +76,9 @@
 
   <!-- Nostr tools (browser ESM) -->
   <script type="module">
-    // Import from explicit subpaths to ensure functions are present on CDN builds
-    import { SimplePool } from 'https://esm.sh/nostr-tools@2.7.2/pool';
-    import * as nip19 from 'https://esm.sh/nostr-tools@2.7.2/nip19';
-    import { bytesToHex } from 'https://esm.sh/nostr-tools@2.7.2/utils';
+    // Use unpkg with ?module for robust ESM delivery on GitHub Pages
+    import { SimplePool } from 'https://unpkg.com/nostr-tools@2.7.2/pool.js?module';
+    import * as nip19 from 'https://unpkg.com/nostr-tools@2.7.2/nip19.js?module';
 
     const NPUB = 'npub1rzwlqdnah3v5htggawpvnchnh46nsmygtxft5tfzart83ate9whsjy6xqx';
     const RELAYS = [
@@ -93,6 +92,7 @@
     ];
     const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes
     const CACHE_KEY = 'nostr_articles_cache_v1';
+    const RELAY_TIMEOUT_MS = 8000; // 8s per relay
 
     const elStatus = document.getElementById('status');
     const elGrid = document.getElementById('articles-grid');
@@ -105,13 +105,17 @@
     const elDetailCover = document.getElementById('detail-cover');
     const elDetailContent = document.getElementById('detail-content');
 
+    function u8ToHex(u8) {
+      return Array.from(u8).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
     function npubToHex(npub) {
       try {
         const dec = nip19.decode(npub);
         const d = dec?.data;
         if (!d) return null;
         // nostr-tools may return string or Uint8Array depending on env/version
-        return typeof d === 'string' ? d : bytesToHex(d);
+        return typeof d === 'string' ? d : u8ToHex(d);
       } catch (e) {
         console.error('npub decode error:', e);
         return null;
@@ -267,6 +271,13 @@
       return null;
     }
 
+    function withTimeout(promise, ms) {
+      return new Promise((resolve) => {
+        const t = setTimeout(() => resolve([]), ms);
+        promise.then((v) => { clearTimeout(t); resolve(v); }).catch(() => { clearTimeout(t); resolve([]); });
+      });
+    }
+
     async function fetchEvents() {
       const cached = loadCache();
       if (cached && Array.isArray(cached)) {
@@ -286,10 +297,10 @@
         const perRelay = await Promise.allSettled(
           RELAYS.map(async (r) => {
             try {
-              // Fetch both: NIP-23 long-form (30023) and Kind-1 notes for fallback
+              // Fetch both with per-relay timeout
               const [ev30023, ev1] = await Promise.all([
-                pool.list([r], [{ kinds: [30023], authors: [author], limit: 100 }]),
-                pool.list([r], [{ kinds: [1], authors: [author], limit: 200 }])
+                withTimeout(pool.list([r], [{ kinds: [30023], authors: [author], limit: 100 }]), RELAY_TIMEOUT_MS),
+                withTimeout(pool.list([r], [{ kinds: [1], authors: [author], limit: 200 }]), RELAY_TIMEOUT_MS)
               ]);
               console.log(`Relay ${r} returned ${ev30023.length} (30023) and ${ev1.length} (kind1)`);
               // Attach a marker kind property to distinguish later
@@ -343,7 +354,7 @@
         saveCache(merged);
         if (merged.length === 0) {
           elStatus.className = 'error';
-          elStatus.textContent = 'No articles found: neither NIP-23 long-form nor suitable Kind-1 notes with title could be retrieved on these relays.';
+          elStatus.textContent = 'No articles found: neither NIP-23 long-form nor suitable Kind-1 notes with title could be retrieved on these relays (relays may be slow or not contain your posts).';
         } else {
           elStatus.style.display = 'none';
           renderList(merged);
