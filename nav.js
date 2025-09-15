@@ -18,7 +18,7 @@
   inner.className = 'top-nav__inner';
   nav.appendChild(inner);
 
-  // left: logo
+  // left: logo + wordmark
   const left = document.createElement('div');
   left.className = 'top-nav__left';
   const logoLink = document.createElement('a');
@@ -29,11 +29,15 @@
   img.alt = 'Vice Algos';
   img.className = 'top-nav__logo';
   logoLink.appendChild(img);
+  const word = document.createElement('span');
+  word.className = 'top-nav__wordmark';
+  word.textContent = 'Vice Algos';
   left.appendChild(logoLink);
+  left.appendChild(word);
 
-  // right: menu
-  const right = document.createElement('div');
-  right.className = 'top-nav__right';
+  // center: skewed menu (inspiration from CodePen)
+  const center = document.createElement('div');
+  center.className = 'top-nav__center skew-menu';
   const ul = document.createElement('ul');
   ul.className = 'top-nav__menu';
   for (const it of items) {
@@ -47,10 +51,10 @@
     li.appendChild(a);
     ul.appendChild(li);
   }
-  right.appendChild(ul);
+  center.appendChild(ul);
 
   inner.appendChild(left);
-  inner.appendChild(right);
+  inner.appendChild(center);
 
   // Insert as the first child of body
   const body = document.body;
