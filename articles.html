@@ -204,6 +204,20 @@
       return undefined;
     }
 
+    // Decide if a Kind-1 note looks like a long-form "read"
+    function isKind1LongForm(md) {
+      if (!md) return false;
+      const trimmed = md.trim();
+      // Must start with a top-level heading (# or ##) on the first non-empty line
+      const firstLine = trimmed.split(/\n/).find(l => l.trim().length > 0) || '';
+      if (!/^#{1,2}\s+\S+/.test(firstLine)) return false;
+      // Require body length beyond heading
+      const parts = trimmed.split(/\n\s*\n/).map(s => s.trim()).filter(Boolean);
+      const body = (parts.length > 1 ? parts.slice(1).join('\n\n') : '').replace(/[`*_#>]/g, '');
+      if (body.length < 140) return false; // ensure it isn't a short tweet/poem
+      return true;
+    }
+
     function renderList(events) {
       elGrid.innerHTML = '';
       for (const ev of events) {
@@ -381,10 +395,12 @@
           }
         }
         // Process kind-1 fallbacks into pseudo-articles
-        const k1Articles = plain
-          .filter(e => e.__kind === 1)
+        const k1Candidates = plain.filter(e => e.__kind === 1);
+        const hasLongform30023 = byD.size > 0;
+        const k1Articles = (hasLongform30023 ? [] : k1Candidates)
           .map(e => {
             const md = e.content || '';
+            if (!isKind1LongForm(md)) return null;
             const title = tagValue(e, 'title') || guessTitleFromContent(md);
             const summary = tagValue(e, 'summary') || guessSummaryFromContent(md);
             const image = tagValue(e, 'image') || guessImageFromContent(md);
