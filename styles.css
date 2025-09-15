@@ -73,8 +73,9 @@ header h1 {
 /* Accent-colored SVG via mask; bigger (2x) */
 .top-nav__logo-mask {
   display: inline-block;
-  height: 56px; /* 2x previous 28px */
-  width: 160px; /* flexible width; masked to contain */
+  /* Increase logo size by ~1.3x */
+  height: 73px; /* was 56px */
+  width: 208px;  /* was 160px */
   background-color: var(--accent);
   -webkit-mask: url('Vice_Logo.svg') no-repeat center / contain;
           mask: url('Vice_Logo.svg') no-repeat center / contain;
