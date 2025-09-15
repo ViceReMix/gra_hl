@@ -76,14 +76,17 @@
 
   <!-- Nostr tools (browser ESM) -->
   <script type="module">
-    import { SimplePool, nip19 } from 'https://esm.sh/nostr-tools@2.7.2';
+    import { SimplePool, nip19, utils } from 'https://esm.sh/nostr-tools@2.7.2';
 
     const NPUB = 'npub1rzwlqdnah3v5htggawpvnchnh46nsmygtxft5tfzart83ate9whsjy6xqx';
     const RELAYS = [
       'wss://relay.damus.io',
       'wss://nos.lol',
       'wss://relay.primal.net',
-      'wss://relay.nostr.band'
+      'wss://relay.nostr.band',
+      'wss://eden.nostr.land',
+      'wss://relayable.org',
+      'wss://offchain.pub'
     ];
     const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes
     const CACHE_KEY = 'nostr_articles_cache_v1';
@@ -100,7 +103,16 @@
     const elDetailContent = document.getElementById('detail-content');
 
     function npubToHex(npub) {
-      try { return nip19.decode(npub).data; } catch { return null; }
+      try {
+        const dec = nip19.decode(npub);
+        const d = dec?.data;
+        if (!d) return null;
+        // nostr-tools may return string or Uint8Array depending on env/version
+        return typeof d === 'string' ? d : utils.bytesToHex(d);
+      } catch (e) {
+        console.error('npub decode error:', e);
+        return null;
+      }
     }
 
     function tagValue(ev, name) {
@@ -226,10 +238,24 @@
         const author = npubToHex(NPUB);
         if (!author) throw new Error('Invalid npub');
 
+        console.log('Author (hex):', author);
         const pool = new SimplePool();
         elRelayCount.textContent = `Relays: ${RELAYS.length}`;
 
-        const events = await pool.list(RELAYS, [{ kinds: [30023], authors: [author], limit: 100 }]);
+        // Query per-relay to get visibility on which ones respond
+        const perRelay = await Promise.allSettled(
+          RELAYS.map(async (r) => {
+            try {
+              const evs = await pool.list([r], [{ kinds: [30023], authors: [author], limit: 100 }]);
+              console.log(`Relay ${r} returned ${evs.length} events`);
+              return evs;
+            } catch (e) {
+              console.warn(`Relay ${r} error`, e);
+              return [];
+            }
+          })
+        );
+        const events = perRelay.flatMap(x => (x.status === 'fulfilled' ? x.value : []));
         // Deduplicate by id; NIP‑23 replaceable (same d) — keep latest per d
         const byD = new Map();
         const plain = [];
@@ -246,14 +272,19 @@
           .sort((a, b) => (b.created_at || 0) - (a.created_at || 0));
 
         saveCache(merged);
-        elStatus.style.display = 'none';
-        renderList(merged);
+        if (merged.length === 0) {
+          elStatus.className = 'error';
+          elStatus.textContent = 'No NIP-23 (kind 30023) long-form events found for this pubkey on the queried relays.';
+        } else {
+          elStatus.style.display = 'none';
+          renderList(merged);
+        }
 
         pool.close(RELAYS);
       } catch (err) {
-        console.error(err);
+        console.error('Relay load error:', err);
         elStatus.className = 'error';
-        elStatus.textContent = 'Failed to load from relays';
+        elStatus.textContent = `Failed to load from relays: ${err?.message || err}`;
       }
     }
 
