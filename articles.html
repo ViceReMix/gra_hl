@@ -76,7 +76,10 @@
 
   <!-- Nostr tools (browser ESM) -->
   <script type="module">
-    import { SimplePool, nip19, utils } from 'https://esm.sh/nostr-tools@2.7.2';
+    // Import from explicit subpaths to ensure functions are present on CDN builds
+    import { SimplePool } from 'https://esm.sh/nostr-tools@2.7.2/pool';
+    import * as nip19 from 'https://esm.sh/nostr-tools@2.7.2/nip19';
+    import { bytesToHex } from 'https://esm.sh/nostr-tools@2.7.2/utils';
 
     const NPUB = 'npub1rzwlqdnah3v5htggawpvnchnh46nsmygtxft5tfzart83ate9whsjy6xqx';
     const RELAYS = [
@@ -108,7 +111,7 @@
         const d = dec?.data;
         if (!d) return null;
         // nostr-tools may return string or Uint8Array depending on env/version
-        return typeof d === 'string' ? d : utils.bytesToHex(d);
+        return typeof d === 'string' ? d : bytesToHex(d);
       } catch (e) {
         console.error('npub decode error:', e);
         return null;
