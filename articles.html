@@ -6,6 +6,7 @@
   <title>Vice Algos — Nostr Articles</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
+    html { scroll-behavior: smooth; }
     /* Page-specific minimal styles that reuse existing CSS variables */
     .articles-header { background-color: var(--component-bg); padding: 1.25rem 0; text-align: center; color: var(--text-primary); }
     .articles-header h1 { font-size: 2rem; margin: 0; }
@@ -86,6 +87,7 @@
   </style>
 </head>
 <body>
+  <a id="top"></a>
   <header class="articles-header">
     <h1>Vice Algos — Nostr Articles</h1>
     <div class="articles-subtitle">Client-side reader for NIP‑23 (kind 30023) long‑form notes</div>
@@ -111,8 +113,8 @@
     </section>
   </main>
 
-  <!-- Back to Top Button -->
-  <button id="backToTop" class="back-to-top" aria-label="Return to top">Top ↑</button>
+  <!-- Back to Top Button (anchor link, no JS required) -->
+  <a href="#top" id="backToTop" class="back-to-top" aria-label="Return to top">Top ↑</a>
 
   <!-- Markdown renderer & sanitizer -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -391,12 +393,6 @@
         elStatus.textContent = `Failed to load from relays: ${err?.message || err}`;
       }
     }
-
-    // Back to top behavior (always visible)
-    const backBtn = document.getElementById('backToTop');
-    backBtn.addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
 
     fetchEvents();
   </script>
