@@ -61,6 +61,27 @@
 
     .loading, .error { text-align: center; color: var(--text-secondary); padding: 0.5rem; }
     .error { color: var(--error); }
+
+    /* Back to top button */
+    .back-to-top {
+      position: fixed;
+      right: 1rem;
+      bottom: 1.25rem;
+      background: var(--accent);
+      color: var(--component-bg);
+      border: 1px solid var(--accent);
+      border-radius: 999px;
+      padding: 0.6rem 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      z-index: 999;
+    }
+    .back-to-top.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
   </style>
 </head>
 <body>
@@ -88,6 +109,9 @@
       </div>
     </section>
   </main>
+
+  <!-- Back to Top Button -->
+  <button id="backToTop" class="back-to-top" aria-label="Return to top">Top ↑</button>
 
   <!-- Markdown renderer & sanitizer -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -366,6 +390,17 @@
         elStatus.textContent = `Failed to load from relays: ${err?.message || err}`;
       }
     }
+
+    // Back to top behavior
+    const backBtn = document.getElementById('backToTop');
+    const showAfter = 400; // px scrolled
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > showAfter) backBtn.classList.add('show');
+      else backBtn.classList.remove('show');
+    });
+    backBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
 
     fetchEvents();
   </script>
