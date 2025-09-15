@@ -76,12 +76,13 @@
       cursor: pointer;
       box-shadow: 0 6px 18px rgba(0,0,0,0.35);
       transition: opacity 0.2s ease, transform 0.2s ease;
-      opacity: 0;
-      transform: translateY(10px);
-      pointer-events: none;
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
       z-index: 999;
     }
-    .back-to-top.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    /* Hover effect for feedback */
+    .back-to-top:hover { transform: translateY(-2px); }
   </style>
 </head>
 <body>
@@ -391,17 +392,8 @@
       }
     }
 
-    // Back to top behavior
+    // Back to top behavior (always visible)
     const backBtn = document.getElementById('backToTop');
-    const showAfter = 400; // px scrolled
-    const getScrollTop = () => (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0);
-    const updateBackBtn = () => {
-      if (getScrollTop() > showAfter) backBtn.classList.add('show');
-      else backBtn.classList.remove('show');
-    };
-    window.addEventListener('scroll', updateBackBtn, { passive: true });
-    window.addEventListener('resize', updateBackBtn);
-    document.addEventListener('DOMContentLoaded', updateBackBtn);
     backBtn.addEventListener('click', () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
