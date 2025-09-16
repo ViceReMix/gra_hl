@@ -76,8 +76,8 @@ header h1 {
 .top-nav__logo-mask {
   display: inline-block;
   /* Fluid size: stays within these bounds and scales with viewport */
-  height: clamp(56px, 9vw, 84px);
-  width: clamp(200px, 36vw, 300px);
+  height: clamp(64px, 10.35vw, 96px); /* ~+15% */
+  width: clamp(230px, 41.4vw, 345px);  /* ~+15% */
   background-color: var(--accent);
   -webkit-mask: url('Vice_Logo.svg') no-repeat center / contain;
           mask: url('Vice_Logo.svg') no-repeat center / contain;
