@@ -329,13 +329,15 @@ main {
 .chart {
     height: 400px !important;
     width: 100% !important;
-    max-height: 400px !important;
+    /* remove strict max-height so axes/titles can fit */
+    max-height: none !important;
 }
 
 .chart-container {
-    height: 500px !important;
-    max-height: 500px !important;
-    overflow: hidden;
+    /* Let the container grow with content to avoid clipping axes on small screens */
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible;
 }
 
 /* Filter Buttons */
@@ -469,6 +471,10 @@ main {
 @media (max-width: 480px) {
     .stats-row {
         grid-template-columns: 1fr;
+    }
+    /* On very small screens, give charts extra height so axis titles and tick labels fit */
+    .chart {
+        height: 520px !important;
     }
 }
 
