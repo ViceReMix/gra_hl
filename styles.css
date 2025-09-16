@@ -59,7 +59,8 @@ header h1 {
 .top-nav__inner {
     max-width: 1200px; /* centered content with breathing room on both sides */
     margin: 0 auto;
-    padding: 0.5rem 1.25rem; /* slightly reduced vertical padding */
+    /* Move content slightly left by reducing left padding only */
+    padding: 0.5rem 1.25rem 0.5rem 0.75rem; /* top right bottom left */
     display: flex;
     align-items: center; /* vertical centering */
     justify-content: flex-start;
@@ -73,9 +74,9 @@ header h1 {
 /* Accent-colored SVG via mask; bigger (2x) */
 .top-nav__logo-mask {
   display: inline-block;
-  /* Increase logo size by ~1.3x */
-  height: 73px; /* was 56px */
-  width: 208px;  /* was 160px */
+  /* Make logo slightly bigger while keeping layout */
+  height: 84px; /* was 73px */
+  width: 300px;  /* was 208px */
   background-color: var(--accent);
   -webkit-mask: url('Vice_Logo.svg') no-repeat center / contain;
           mask: url('Vice_Logo.svg') no-repeat center / contain;
@@ -104,7 +105,7 @@ header h1 {
   /* Place menu below logo in normal flow to avoid overlap */
   .top-nav__center { order: 2; width: 100%; position: static; transform: none; left: auto; top: auto; margin-top: 0.25rem; }
   /* Shrink logo for mobile */
-  .top-nav__logo-mask { height: 56px; width: 160px; }
+  .top-nav__logo-mask { height: 64px; width: 220px; }
   /* De-skew and wrap buttons nicely */
   .skew-menu ul { transform: none; display: flex; flex-wrap: wrap; justify-content: center; }
   .skew-menu ul li { border-radius: 8px; margin: 0.25rem; border-right: none; }
