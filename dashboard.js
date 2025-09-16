@@ -1,23 +1,59 @@
 // Dashboard.js - Trading Performance Dashboard
 
-// Watermark plugin for Chart.js
+// Watermark plugin for Chart.js (SVG logo instead of text)
 const watermarkPlugin = {
     id: 'watermark',
+    // Preload image once per page
+    _img: null,
+    _loaded: false,
+    _loading: false,
+    _ensureImage() {
+        if (this._loaded || this._loading) return;
+        this._loading = true;
+        const img = new Image();
+        // Same-origin SVG in repo root
+        img.src = 'Vice_Logo.svg';
+        img.onload = () => {
+            this._img = img;
+            this._loaded = true;
+        };
+        img.onerror = () => {
+            // If the SVG fails to load, silently fall back to nothing
+            this._loaded = false;
+        };
+    },
     afterDraw(chart, args, options) {
         const { ctx, chartArea } = chart;
         if (!chartArea) return;
-        const text = (options && options.text) || '@Vice_Algos';
+
+        // Kick off image loading if needed
+        this._ensureImage();
+        if (!this._loaded || !this._img) return; // wait until loaded
+
         ctx.save();
-        // Lower opacity for subtlety
+        // Opacity preserved from previous implementation
         ctx.globalAlpha = (options && options.opacity) != null ? options.opacity : 0.12;
-        ctx.fillStyle = (options && options.color) || '#e5f7ef';
-        ctx.textAlign = 'right';
-        ctx.textBaseline = 'bottom';
-        // Smaller, responsive font size based on chart width
-        const size = Math.max(14, Math.floor((chartArea.right - chartArea.left) * 0.035));
-        ctx.font = `700 ${size}px Roboto, Roboto Mono, sans-serif`;
+
         const pad = 10;
-        ctx.fillText(text, chartArea.right - pad, chartArea.bottom - pad);
+        const areaW = chartArea.right - chartArea.left;
+        const areaH = chartArea.bottom - chartArea.top;
+
+        // Responsive sizing: width at ~25% of plot width, capped for readability
+        const targetW = Math.min(Math.max(areaW * 0.25, 80), 320);
+        const aspect = this._img.naturalWidth && this._img.naturalHeight
+            ? this._img.naturalWidth / this._img.naturalHeight
+            : 3.2; // safe default
+        const targetH = targetW / aspect;
+
+        const dx = chartArea.right - pad - targetW;
+        const dy = chartArea.bottom - pad - targetH;
+
+        try {
+            ctx.drawImage(this._img, dx, dy, targetW, targetH);
+        } catch (_) {
+            // If drawImage fails for any reason, do nothing (no watermark)
+        }
+
         ctx.restore();
     }
 };
