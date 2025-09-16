@@ -59,12 +59,13 @@ header h1 {
 .top-nav__inner {
     max-width: 1200px; /* centered content with breathing room on both sides */
     margin: 0 auto;
-    /* Move content slightly left by reducing left padding only */
+    /* Keep slight left shift */
     padding: 0.5rem 1.25rem 0.5rem 0.75rem; /* top right bottom left */
     display: flex;
-    align-items: center; /* vertical centering */
-    justify-content: flex-start;
-    position: relative; /* enable absolute centering for the menu */
+    flex-direction: column; /* stack logo above menu */
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
 }
 
 .top-nav__left { display: flex; align-items: center; gap: 0.75rem; }
@@ -83,7 +84,7 @@ header h1 {
 }
 .top-nav__wordmark { display: none; }
 
-.top-nav__center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; justify-content: center; }
+.top-nav__center { position: static; left: auto; top: auto; transform: none; display: flex; justify-content: center; width: 100%; }
 
 /* Skewed menu inspired by CodePen (variables converted to CSS custom properties) */
 .skew-menu { text-align: center; }
