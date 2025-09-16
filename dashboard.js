@@ -31,14 +31,15 @@ const watermarkPlugin = {
         if (!this._loaded || !this._img) return; // wait until loaded
 
         ctx.save();
-        // Opacity preserved from previous implementation
-        ctx.globalAlpha = (options && options.opacity) != null ? options.opacity : 0.12;
-
         const pad = 10;
         const areaW = chartArea.right - chartArea.left;
-        const areaH = chartArea.bottom - chartArea.top;
+        // const areaH = chartArea.bottom - chartArea.top; // not used currently
 
-        // Responsive sizing: width at ~25% of plot width, capped for readability
+        // Opacity and color (match previous text watermark defaults)
+        const opacity = (options && options.opacity) != null ? options.opacity : 0.12;
+        const color = (options && options.color) || '#e5f7ef';
+
+        // Responsive sizing: width at ~25% of plot width, capped
         const targetW = Math.min(Math.max(areaW * 0.25, 80), 320);
         const aspect = this._img.naturalWidth && this._img.naturalHeight
             ? this._img.naturalWidth / this._img.naturalHeight
@@ -49,9 +50,23 @@ const watermarkPlugin = {
         const dy = chartArea.bottom - pad - targetH;
 
         try {
-            ctx.drawImage(this._img, dx, dy, targetW, targetH);
+            // Draw to offscreen canvas to tint the black SVG with desired color
+            const off = document.createElement('canvas');
+            off.width = Math.max(1, Math.floor(targetW));
+            off.height = Math.max(1, Math.floor(targetH));
+            const octx = off.getContext('2d');
+            // Draw SVG scaled
+            octx.drawImage(this._img, 0, 0, off.width, off.height);
+            // Use the image as alpha mask, then fill with the desired color
+            octx.globalCompositeOperation = 'source-in';
+            octx.fillStyle = color;
+            octx.fillRect(0, 0, off.width, off.height);
+
+            // Back to main context with requested opacity
+            ctx.globalAlpha = opacity;
+            ctx.drawImage(off, dx, dy);
         } catch (_) {
-            // If drawImage fails for any reason, do nothing (no watermark)
+            // If anything fails, skip drawing
         }
 
         ctx.restore();
