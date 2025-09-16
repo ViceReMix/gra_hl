@@ -74,9 +74,9 @@ header h1 {
 /* Accent-colored SVG via mask; bigger (2x) */
 .top-nav__logo-mask {
   display: inline-block;
-  /* Make logo slightly bigger while keeping layout */
-  height: 84px; /* was 73px */
-  width: 300px;  /* was 208px */
+  /* Fluid size: stays within these bounds and scales with viewport */
+  height: clamp(56px, 9vw, 84px);
+  width: clamp(200px, 36vw, 300px);
   background-color: var(--accent);
   -webkit-mask: url('Vice_Logo.svg') no-repeat center / contain;
           mask: url('Vice_Logo.svg') no-repeat center / contain;
@@ -99,17 +99,15 @@ header h1 {
 .top-nav .skew-menu ul li:hover { background: var(--accent); color: var(--text-primary); }
 .top-nav .skew-menu ul li a { padding: 0.55rem 1rem; }
 
-/* Responsive: simplify skew on small screens */
-@media (max-width: 720px) {
+/* Responsive: simplify skew on tablets and smaller */
+@media (max-width: 1024px) {
   .top-nav__inner { flex-wrap: wrap; gap: 0.5rem; }
   /* Place menu below logo in normal flow to avoid overlap */
   .top-nav__center { order: 2; width: 100%; position: static; transform: none; left: auto; top: auto; margin-top: 0.25rem; }
-  /* Shrink logo for mobile */
-  .top-nav__logo-mask { height: 64px; width: 220px; }
   /* De-skew and wrap buttons nicely */
-  .skew-menu ul { transform: none; display: flex; flex-wrap: wrap; justify-content: center; }
+  .skew-menu ul { transform: none; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.25rem; }
   .skew-menu ul li { border-radius: 8px; margin: 0.25rem; border-right: none; }
-  .skew-menu ul li a { transform: none; padding: 0.5rem 0.9rem; }
+  .skew-menu ul li a { transform: none; padding: 0.45rem 0.8rem; font-size: 0.95rem; }
 }
 
 /* When nav is present, we can hide the old page title, but keep last-updated */
