@@ -268,10 +268,24 @@ function createPnLChart(individualTrades) {
             responsive: true,
             maintainAspectRatio: false,
             animation: false,
+            interaction: { mode: 'index', intersect: false },
             plugins: {
                 legend: {
                     labels: {
                         color: '#fde2f3'
+                    }
+                },
+                tooltip: {
+                    enabled: true,
+                    callbacks: {
+                        label: function(context) {
+                            const v = context.parsed.y;
+                            return `Equity: ${v.toFixed(4)}%`;
+                        },
+                        title: function(items) {
+                            // Show date label as title
+                            return items && items.length ? items[0].label : '';
+                        }
                     }
                 }
             },
@@ -412,11 +426,13 @@ function createRiskRewardChart(individualTrades) {
             responsive: true,
             maintainAspectRatio: false,
             animation: false,
+            interaction: { mode: 'nearest', intersect: false },
             plugins: {
                 legend: {
                     display: false
                 },
                 tooltip: {
+                    enabled: true,
                     callbacks: {
                         label: function(context) {
                             const trade = context.raw;
@@ -568,6 +584,7 @@ function createPnLDistributionChart(individualTrades) {
             responsive: true,
             maintainAspectRatio: false,
             animation: false,
+            interaction: { mode: 'index', intersect: false },
             plugins: {
                 legend: {
                     display: true,
@@ -577,6 +594,7 @@ function createPnLDistributionChart(individualTrades) {
                     }
                 },
                 tooltip: {
+                    enabled: true,
                     callbacks: {
                         label: function(context) {
                             return `${context.dataset.label}: ${context.parsed.y} trades`;
@@ -714,6 +732,7 @@ function createDurationDistributionChart(individualTrades) {
             responsive: true,
             maintainAspectRatio: false,
             animation: false,
+            interaction: { mode: 'index', intersect: false },
             plugins: {
                 legend: {
                     display: true,
@@ -723,6 +742,7 @@ function createDurationDistributionChart(individualTrades) {
                     }
                 },
                 tooltip: {
+                    enabled: true,
                     callbacks: {
                         label: function(context) {
                             return `${context.dataset.label}: ${context.parsed.y} trades`;
