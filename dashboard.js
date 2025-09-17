@@ -412,11 +412,17 @@ function createRiskRewardChart(individualTrades) {
         });
     }
     
-    // Calculate axis ranges with padding
+    // Calculate axis ranges with simple rule:
+    // - X axis: keep previous behavior (min padded, max at 0)
+    // - Y axis: fixed minimum at -0.5%, dynamic maximum with 10% headroom and at least 0.5%
     const allTrades = [...longTrades, ...shortTrades];
-    const minX = Math.min(...allTrades.map(t => t.x)) * 1.1;
-    const maxY = Math.max(...allTrades.map(t => t.y)) * 1.1;
-    
+    const xValues = allTrades.map(t => t.x);
+    const yValues = allTrades.map(t => t.y);
+
+    const xMin = Math.min(...xValues) * 1.1; // a bit more room on the left
+    const rawMaxY = Math.max(...yValues);
+    const yMax = Math.max(0.5, rawMaxY * 1.1); // ensure at least 0.5% visible on top
+
     riskRewardChart = new Chart(ctx, {
         type: 'scatter',
         data: {
@@ -462,7 +468,7 @@ function createRiskRewardChart(individualTrades) {
                     grid: {
                         color: 'rgba(253, 226, 243, 0.1)'
                     },
-                    min: minX,
+                    min: xMin,
                     max: 0
                 },
                 y: {
@@ -477,8 +483,8 @@ function createRiskRewardChart(individualTrades) {
                     grid: {
                         color: 'rgba(253, 226, 243, 0.1)'
                     },
-                    min: 0,
-                    max: maxY
+                    min: -0.5,
+                    max: yMax
                 }
             }
         }
