@@ -193,6 +193,76 @@ function updateStatCards(metrics, filter = 'total') {
     }
 }
 
+// Process individual trades data to create daily cumulative PnL timeline
+function processTradesForDailyChart(individualTrades) {
+    if (!individualTrades || individualTrades.length === 0) {
+        return { labels: [], data: [] };
+    }
+    
+    // Sort trades by timestamp
+    const sortedTrades = [...individualTrades].sort((a, b) =>
+        new Date(a.timestamp_exit) - new Date(b.timestamp_exit)
+    );
+    
+    const labels = [];
+    const data = [];
+    let cumulativeEquityGrowth = 0;
+    
+    // Group trades by day
+    const dailyTrades = {};
+    
+    sortedTrades.forEach(trade => {
+        const tradeDate = new Date(trade.timestamp_exit);
+        // Extract date in YYYY-MM-DD format for grouping
+        const dateKey = tradeDate.toISOString().split('T')[0];
+        
+        if (!dailyTrades[dateKey]) {
+            dailyTrades[dateKey] = [];
+        }
+        dailyTrades[dateKey].push(trade);
+    });
+    
+    // Find the date range from first to last trade
+    const firstTradeDate = new Date(sortedTrades[0].timestamp_exit);
+    const lastTradeDate = new Date(sortedTrades[sortedTrades.length - 1].timestamp_exit);
+    
+    // Add starting point (0% one day before first trade)
+    const startDate = new Date(firstTradeDate);
+    startDate.setDate(startDate.getDate() - 1);
+    
+    // Format date in European style (DD/MM/YYYY)
+    labels.push(startDate.toLocaleDateString('en-GB'));
+    data.push(0);
+    
+    // Create a continuous timeline from first to last trade date
+    const currentDate = new Date(firstTradeDate);
+    const endDate = new Date(lastTradeDate);
+    
+    while (currentDate <= endDate) {
+        const dateKey = currentDate.toISOString().split('T')[0];
+        const dayTrades = dailyTrades[dateKey] || [];
+        
+        // Calculate daily equity impact by summing all trades for that day
+        let dailyEquityImpact = 0;
+        dayTrades.forEach(trade => {
+            // Calculate accurate equity growth: pnl_percentage * position_size_percent_equity
+            const equityImpact = (trade.pnl_percentage * trade.position_size_percent_equity) / 100;
+            dailyEquityImpact += equityImpact;
+        });
+        
+        cumulativeEquityGrowth += dailyEquityImpact;
+        
+        // Format date in European style (DD/MM/YYYY)
+        labels.push(currentDate.toLocaleDateString('en-GB'));
+        data.push(cumulativeEquityGrowth);
+        
+        // Move to next day
+        currentDate.setDate(currentDate.getDate() + 1);
+    }
+    
+    return { labels, data };
+}
+
 // Process individual trades data to create cumulative PnL timeline
 function processTradesForChart(individualTrades) {
     if (!individualTrades || individualTrades.length === 0) {
@@ -234,7 +304,7 @@ function processTradesForChart(individualTrades) {
 }
 
 // Create PnL progression chart
-function createPnLChart(individualTrades) {
+function createPnLChart(individualTrades, useDailyAggregation = true) {
     const ctx = document.getElementById('pnl-chart');
     if (!ctx) return;
     
@@ -244,7 +314,10 @@ function createPnLChart(individualTrades) {
         pnlChart = null;
     }
     
-    const chartData = processTradesForChart(individualTrades);
+    // Choose processing function based on aggregation preference
+    const chartData = useDailyAggregation
+        ? processTradesForDailyChart(individualTrades)
+        : processTradesForChart(individualTrades);
     
     pnlChart = new Chart(ctx, {
         type: 'line',
@@ -865,7 +938,7 @@ async function initDashboard() {
         
         // Create charts if individual trades data exists
         if (data.individual_trades && data.individual_trades.length > 0) {
-            createPnLChart(data.individual_trades);
+            createPnLChart(data.individual_trades, true); // Use daily aggregation by default
             createRiskRewardChart(data.individual_trades);
             createPnLDistributionChart(data.individual_trades);
             createDurationDistributionChart(data.individual_trades);
