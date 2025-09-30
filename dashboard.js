@@ -949,13 +949,18 @@ async function initDashboard() {
         
     } catch (error) {
         console.error('Error initializing dashboard:', error);
-        document.body.innerHTML = `
-            <div style="text-align: center; padding: 2rem; color: var(--negative-color);">
-                <h2>Error Loading Dashboard</h2>
-                <p>${error.message || 'Unknown error occurred'}</p>
-                <p>Please try again later or check the data source.</p>
-            </div>
-        `;
+        
+        // Display error message WITHOUT destroying the page structure
+        const lastUpdated = document.getElementById('last-updated');
+        if (lastUpdated) {
+            lastUpdated.textContent = 'Data unavailable - please check back later';
+            lastUpdated.style.color = 'var(--negative-color)';
+        }
+        
+        // Keep the page structure intact - just show placeholder values
+        console.log('Dashboard will display with placeholder values');
+        setupFilterButtons(); // Still setup filter buttons for UI consistency
+        isInitialized = true; // Mark as initialized to prevent repeated attempts
     }
 }
 
