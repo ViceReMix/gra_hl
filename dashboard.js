@@ -212,9 +212,8 @@ function processTradesForDailyChart(individualTrades) {
     const dailyTrades = {};
     
     sortedTrades.forEach(trade => {
-        const tradeDate = new Date(trade.timestamp_exit);
-        // Extract date in YYYY-MM-DD format for grouping
-        const dateKey = tradeDate.toISOString().split('T')[0];
+        // Parse timestamp and extract date in UTC (YYYY-MM-DD format)
+        const dateKey = trade.timestamp_exit.split('T')[0];
         
         if (!dailyTrades[dateKey]) {
             dailyTrades[dateKey] = [];
@@ -227,16 +226,31 @@ function processTradesForDailyChart(individualTrades) {
     const lastTradeDate = new Date(sortedTrades[sortedTrades.length - 1].timestamp_exit);
     
     // Add starting point (0% one day before first trade)
-    const startDate = new Date(firstTradeDate);
-    startDate.setDate(startDate.getDate() - 1);
+    const startDate = new Date(Date.UTC(
+        firstTradeDate.getUTCFullYear(),
+        firstTradeDate.getUTCMonth(),
+        firstTradeDate.getUTCDate() - 1
+    ));
     
-    // Format date in European style (DD/MM/YYYY)
-    labels.push(startDate.toLocaleDateString('en-GB'));
+    // Format date in European style (DD/MM/YYYY) using UTC
+    const startDay = String(startDate.getUTCDate()).padStart(2, '0');
+    const startMonth = String(startDate.getUTCMonth() + 1).padStart(2, '0');
+    const startYear = startDate.getUTCFullYear();
+    labels.push(`${startDay}/${startMonth}/${startYear}`);
     data.push(0);
     
     // Create a continuous timeline from first to last trade date
-    const currentDate = new Date(firstTradeDate);
-    const endDate = new Date(lastTradeDate);
+    // Use UTC dates to avoid timezone issues
+    const currentDate = new Date(Date.UTC(
+        firstTradeDate.getUTCFullYear(),
+        firstTradeDate.getUTCMonth(),
+        firstTradeDate.getUTCDate()
+    ));
+    const endDate = new Date(Date.UTC(
+        lastTradeDate.getUTCFullYear(),
+        lastTradeDate.getUTCMonth(),
+        lastTradeDate.getUTCDate()
+    ));
     
     while (currentDate <= endDate) {
         const dateKey = currentDate.toISOString().split('T')[0];
@@ -252,12 +266,15 @@ function processTradesForDailyChart(individualTrades) {
         
         cumulativeEquityGrowth += dailyEquityImpact;
         
-        // Format date in European style (DD/MM/YYYY)
-        labels.push(currentDate.toLocaleDateString('en-GB'));
+        // Format date in European style (DD/MM/YYYY) using UTC
+        const day = String(currentDate.getUTCDate()).padStart(2, '0');
+        const month = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
+        const year = currentDate.getUTCFullYear();
+        labels.push(`${day}/${month}/${year}`);
         data.push(cumulativeEquityGrowth);
         
-        // Move to next day
-        currentDate.setDate(currentDate.getDate() + 1);
+        // Move to next day (UTC)
+        currentDate.setUTCDate(currentDate.getUTCDate() + 1);
     }
     
     return { labels, data };
