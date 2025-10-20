@@ -6,7 +6,7 @@
   const items = Array.isArray(cfg.items) && cfg.items.length ? cfg.items : [
     { label: 'Dashboard', href: 'index.html' },
     { label: 'Research', href: 'articles.html' },
-    { label: 'Copy Trading', href: 'https://app.hyperliquid.xyz/vaults/0xac2322fe93c6b79f1178cfe77bc732f729bcb606', target: '_blank' },
+    { label: 'Copy Trading', href: 'https://app.hyperliquid.xyz/vaults/0xccc01fa89e4163aaaa231d3d0a2943cc613bf2ea', target: '_blank' },
     { label: 'Contact', href: 'https://primal.net/p/nprofile1qqsp380sxe7mck2t45ywhqkfutem6afcdjy9ny46953w34nc74ujhtc5zxs27', target: '_blank' }
   ];
 
