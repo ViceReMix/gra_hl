@@ -6,6 +6,7 @@
     <title>Trading Performance Dashboard</title>
     <link rel="stylesheet" href="styles.css">
     <script src="nav.js" defer></script>
+    <script src="vault-apr.js" defer></script>
 </head>
 <body>
     <header>
@@ -13,6 +14,64 @@
     </header>
     
     <main>
+        <!-- VAULT APR DISPLAY SECTION -->
+        <div class="metrics-card">            
+            <!-- APR Card -->
+            <div class="apr-card" style="background: linear-gradient(135deg, var(--component-bg) 0%, #2a2f3a 100%); border: 2px solid var(--accent); border-radius: 15px; padding: 30px; margin-bottom: 30px; text-align: center; box-shadow: 0 8px 32px rgba(67, 255, 175, 0.1); position: relative; overflow: hidden;">
+                <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent) 0%, #6bffd8 50%, var(--accent) 100%);"></div>
+                <div style="margin-bottom: 10px; color: var(--text-secondary); font-size: 0.9em;">ANNUAL PERCENTAGE RATE (based on the last 30 Days Performance)</div>
+                <div style="font-size: 3.5em; font-weight: bold; color: var(--accent); margin-bottom: 10px; text-shadow: 0 0 20px rgba(67, 255, 175, 0.3);">
+                    <span id="vault-apr" style="color: var(--accent);">Loading...</span>
+                </div>
+                <div style="color: var(--text-secondary); font-size: 0.85em; opacity: 0.8;">*Live data from HyperLiquid</div>
+            </div>
+            
+            <!-- Interactive Investment Calculator -->
+            <div class="calculator-card" style="background: var(--component-bg); border-radius: 15px; padding: 30px; border: 1px solid var(--border-color);">
+                <h3 style="margin-bottom: 25px; color: var(--text-primary); text-align: center;">Investment Calculator</h3>
+                
+                <!-- Investment Amount Input -->
+                <div style="margin-bottom: 30px; text-align: center;">
+                    <label style="display: block; color: var(--text-secondary); margin-bottom: 10px; font-size: 0.9em;">Investment Amount</label>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <span style="color: var(--text-primary); font-size: 1.2em; font-weight: bold;">$</span>
+                        <input type="number" id="investment-input" value="1000" min="1" max="1000000" step="10" 
+                               style="background: var(--background); color: var(--text-primary); border: 2px solid var(--border-color); border-radius: 8px; padding: 12px 16px; font-size: 1.3em; font-weight: bold; width: 200px; text-align: center; transition: all 0.3s ease;">
+                    </div>
+                </div>
+                
+                <!-- Returns Display -->
+                <div id="investment-calculator" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px;">
+                    <div class="return-item" style="background: var(--background); padding: 20px; border-radius: 10px; text-align: center; border: 1px solid var(--border-color);">
+                        <div style="color: var(--text-secondary); font-size: 0.8em; margin-bottom: 8px;">DAILY</div>
+                        <div class="return-value" id="daily-return" style="color: var(--accent); font-size: 1.5em; font-weight: bold;">$0.00</div>
+                    </div>
+                    <div class="return-item" style="background: var(--background); padding: 20px; border-radius: 10px; text-align: center; border: 1px solid var(--border-color);">
+                        <div style="color: var(--text-secondary); font-size: 0.8em; margin-bottom: 8px;">MONTHLY</div>
+                        <div class="return-value" id="monthly-return" style="color: var(--accent); font-size: 1.5em; font-weight: bold;">$0.00</div>
+                    </div>
+                    <div class="return-item" style="background: var(--background); padding: 20px; border-radius: 10px; text-align: center; border: 1px solid var(--border-color);">
+                        <div style="color: var(--text-secondary); font-size: 0.8em; margin-bottom: 8px;">ANNUAL</div>
+                        <div class="return-value" id="annual-return" style="color: var(--accent); font-size: 1.5em; font-weight: bold;">$0.00</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px; text-align: center;">
+                    <small id="apr-note" style="color: var(--text-secondary); opacity: 0.7;">Waiting for APR data...</small>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px; text-align: center;">
+                <a href="https://app.hyperliquid.xyz/vaults/0xccc01fa89e4163aaaa231d3d0a2943cc613bf2ea" target="_blank" class="glowing-btn">
+                    <span class="glowing-txt">J<span class="faulty-letter">O</span>IN</span>
+                    <span class="glowing-txt">TH<span class="faulty-letter">E</span> COPY</span>
+                    <span class="glowing-txt">TR<span class="faulty-letter">A</span>DING</span>
+                    <span class="glowing-txt">O<span class="faulty-letter">N</span></span>
+                    <span class="glowing-txt">HYP<span class="faulty-letter">E</span>RLIQUID</span>
+                </a>
+            </div>
+        </div>
+        
         <!-- DASHBOARD CONTENT TEMPORARILY HIDDEN - UNCOMMENT TO RESTORE -->
         <!--
         <div class="dashboard-container">
