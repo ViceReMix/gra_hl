@@ -6,11 +6,19 @@
     <title>Trading Performance Dashboard</title>
     <link rel="stylesheet" href="styles.css">
     <script src="nav.js" defer></script>
+    <script src="i18n.js" defer></script>
     <script src="vault-apr.js" defer></script>
 </head>
 <body>
-    <header>
-        <h1>Vice Algos Metrics</h1>
+    <header style="display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap;">
+        <h1 style="margin: 0;">Vice Algos</h1>
+        <!-- Language Toggle -->
+        <button id="lang-toggle" onclick="toggleLanguage()" 
+                style="background: var(--component-bg); border: 1px solid var(--accent); color: var(--accent); padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.8em; transition: all 0.3s ease;"
+                onmouseover="this.style.background='var(--accent)'; this.style.color='var(--background)';"
+                onmouseout="this.style.background='var(--component-bg)'; this.style.color='var(--accent)';">
+            🇫🇷 FR
+        </button>
     </header>
     
     <main>
@@ -32,78 +40,127 @@
                 <!-- APR Card -->
                 <div class="apr-card" style="background: linear-gradient(135deg, var(--component-bg) 0%, #2a2f3a 100%); border: 2px solid var(--accent); border-radius: 15px; padding: 25px; text-align: center; box-shadow: 0 8px 32px rgba(67, 255, 175, 0.1); position: relative; overflow: hidden;">
                     <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent) 0%, #6bffd8 50%, var(--accent) 100%);"></div>
-                    <div style="margin-bottom: 8px; color: var(--text-secondary); font-size: 0.8em;">ANNUAL PERCENTAGE RATE</div>
+                    <div style="margin-bottom: 8px; color: var(--text-secondary); font-size: 0.8em;" data-i18n="stats.apr">ANNUAL PERCENTAGE RATE</div>
                     <div style="font-size: 2.5em; font-weight: bold; color: var(--accent); text-shadow: 0 0 20px rgba(67, 255, 175, 0.3);">
                         <span id="vault-apr" style="color: var(--accent);">Loading...</span>
                     </div>
-                    <div style="color: var(--text-secondary); font-size: 0.75em; opacity: 0.8; margin-top: 5px;">Based on last 30 days</div>
+                    <div style="color: var(--text-secondary); font-size: 0.75em; opacity: 0.8; margin-top: 5px;" data-i18n="stats.apr.note">Based on last 30 days</div>
                 </div>
                 
                 <!-- Vault Capital Card -->
                 <div style="background: linear-gradient(135deg, var(--component-bg) 0%, #2a2f3a 100%); border: 2px solid #6bffd8; border-radius: 15px; padding: 25px; text-align: center; box-shadow: 0 8px 32px rgba(107, 255, 216, 0.1); position: relative; overflow: hidden;">
                     <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #6bffd8 0%, var(--accent) 50%, #6bffd8 100%);"></div>
-                    <div style="margin-bottom: 8px; color: var(--text-secondary); font-size: 0.8em;">VAULT CAPITAL</div>
+                    <div style="margin-bottom: 8px; color: var(--text-secondary); font-size: 0.8em;" data-i18n="stats.capital">VAULT CAPITAL</div>
                     <div style="font-size: 2.5em; font-weight: bold; color: #6bffd8; text-shadow: 0 0 20px rgba(107, 255, 216, 0.3);">
                         <span id="vault-capital">Loading...</span>
                     </div>
-                    <div style="color: var(--text-secondary); font-size: 0.75em; opacity: 0.8; margin-top: 5px;"><span id="follower-count">-</span> followers</div>
+                    <div style="color: var(--text-secondary); font-size: 0.75em; opacity: 0.8; margin-top: 5px;"><span id="follower-count">-</span> <span data-i18n="stats.followers">followers</span></div>
                 </div>
                 
                 <!-- Total Return Card -->
                 <div style="background: linear-gradient(135deg, var(--component-bg) 0%, #2a2f3a 100%); border: 2px solid var(--accent); border-radius: 15px; padding: 25px; text-align: center; box-shadow: 0 8px 32px rgba(67, 255, 175, 0.1); position: relative; overflow: hidden;">
                     <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent) 0%, #6bffd8 50%, var(--accent) 100%);"></div>
-                    <div style="margin-bottom: 8px; color: var(--text-secondary); font-size: 0.8em;">TRADING RETURN</div>
+                    <div style="margin-bottom: 8px; color: var(--text-secondary); font-size: 0.8em;" data-i18n="stats.return">TRADING RETURN</div>
                     <div style="font-size: 2.5em; font-weight: bold; color: var(--accent); text-shadow: 0 0 20px rgba(67, 255, 175, 0.3);">
                         <span id="total-return">Loading...</span>
                     </div>
-                    <div style="color: var(--text-secondary); font-size: 0.75em; opacity: 0.8; margin-top: 5px;">Pure PnL / Initial Capital</div>
+                    <div style="color: var(--text-secondary); font-size: 0.75em; opacity: 0.8; margin-top: 5px;" data-i18n="stats.return.note">Pure PnL / Initial Capital</div>
                 </div>
                 
                 <!-- Days Active Card -->
                 <div style="background: linear-gradient(135deg, var(--component-bg) 0%, #2a2f3a 100%); border: 2px solid #6bffd8; border-radius: 15px; padding: 25px; text-align: center; box-shadow: 0 8px 32px rgba(107, 255, 216, 0.1); position: relative; overflow: hidden;">
                     <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #6bffd8 0%, var(--accent) 50%, #6bffd8 100%);"></div>
-                    <div style="margin-bottom: 8px; color: var(--text-secondary); font-size: 0.8em;">DAYS ACTIVE</div>
+                    <div style="margin-bottom: 8px; color: var(--text-secondary); font-size: 0.8em;" data-i18n="stats.days">DAYS ACTIVE</div>
                     <div style="font-size: 2.5em; font-weight: bold; color: #6bffd8; text-shadow: 0 0 20px rgba(107, 255, 216, 0.3);">
                         <span id="days-active">0</span>
                     </div>
-                    <div style="color: var(--text-secondary); font-size: 0.75em; opacity: 0.8; margin-top: 5px;">Since Oct 1, 2025</div>
+                    <div style="color: var(--text-secondary); font-size: 0.75em; opacity: 0.8; margin-top: 5px;" data-i18n="stats.days.since">Since Oct 1, 2025</div>
                 </div>
             </div>
             
-            <div style="color: var(--text-secondary); font-size: 0.85em; opacity: 0.8; text-align: center; margin: 20px 0;">*Live data from HyperLiquid</div>
+            <div style="color: var(--text-secondary); font-size: 0.85em; opacity: 0.8; text-align: center; margin: 20px 0;" data-i18n="live.note">*Live data from HyperLiquid</div>
             
             <!-- Interactive Investment Calculator -->
             <div class="calculator-card" style="background: var(--component-bg); border-radius: 15px; padding: 30px; border: 1px solid var(--border-color);">
-                <h3 style="margin-bottom: 25px; color: var(--text-primary); text-align: center;">Investment Simulator</h3>
+                <h3 style="margin-bottom: 25px; color: var(--text-primary); text-align: center;" data-i18n="calc.title">
+                    🚀 Investment Time Machine
+                </h3>
                 
-                <!-- Investment Amount Input -->
-                <div style="margin-bottom: 30px; text-align: center;">
-                    <label style="display: block; color: var(--text-secondary); margin-bottom: 10px; font-size: 0.9em;">If you invest</label>
-                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-                        <span style="color: var(--text-primary); font-size: 1.2em; font-weight: bold;">$</span>
-                        <input type="number" id="investment-input" value="1000" min="1" max="1000000" step="100" 
-                               style="background: var(--background); color: var(--text-primary); border: 2px solid var(--border-color); border-radius: 8px; padding: 12px 16px; font-size: 1.3em; font-weight: bold; width: 200px; text-align: center; transition: all 0.3s ease;">
+                <!-- Fixed Investment Amount -->
+                <div style="margin-bottom: 20px; text-align: center;">
+                    <label style="display: block; color: var(--text-secondary); margin-bottom: 10px; font-size: 0.9em;" data-i18n="calc.invested">If you had invested</label>
+                    <span style="color: var(--accent); font-size: 2em; font-weight: bold;">$1,000</span>
+                    <input type="hidden" id="investment-input" value="1000">
+                </div>
+                
+                <!-- Simple date text -->
+                <div style="text-align: center; margin-bottom: 25px; color: var(--text-secondary); font-size: 0.9em;">
+                    <span id="days-ago-label">Since vault inception on October 1st 2025 (70 days ago)</span>
+                </div>
+                
+                <!-- Big Result Display -->
+                <div style="text-align: center; margin-bottom: 25px; padding: 25px; background: linear-gradient(135deg, rgba(67, 255, 175, 0.1) 0%, rgba(107, 255, 216, 0.1) 100%); border-radius: 15px; border: 2px solid var(--accent);">
+                    <div style="color: var(--text-secondary); font-size: 0.9em; margin-bottom: 10px;" data-i18n="calc.earned">You would have earned</div>
+                    <div id="profit-display" style="font-size: 3em; font-weight: bold; color: var(--accent); text-shadow: 0 0 30px rgba(67, 255, 175, 0.4);">
+                        +$212.02
+                    </div>
+                    <div style="margin-top: 10px; color: var(--text-secondary); font-size: 0.9em;">
+                        <span id="profit-pct-display">(+21.20% return)</span>
+                        <span style="margin-left: 10px; color: var(--accent);">• <span id="monthly-rate-display">~9.1%/month</span></span>
                     </div>
                 </div>
                 
-                <!-- Returns Display -->
-                <div id="investment-calculator" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px;">
-                    <div class="return-item" style="background: var(--background); padding: 20px; border-radius: 10px; text-align: center; border: 1px solid var(--border-color);">
-                        <div style="color: var(--text-secondary); font-size: 0.8em; margin-bottom: 8px;">1 MONTH</div>
-                        <div class="return-value" id="monthly-return" style="color: var(--accent); font-size: 1.5em; font-weight: bold;">$0.00</div>
-                    </div>
-                    <div class="return-item" style="background: var(--background); padding: 20px; border-radius: 10px; text-align: center; border: 1px solid var(--border-color);">
-                        <div style="color: var(--text-secondary); font-size: 0.8em; margin-bottom: 8px;">6 MONTHS</div>
-                        <div class="return-value" id="sixmonth-return" style="color: var(--accent); font-size: 1.5em; font-weight: bold;">$0.00</div>
-                    </div>
-                    <div class="return-item" style="background: var(--background); padding: 20px; border-radius: 10px; text-align: center; border: 1px solid var(--border-color);">
-                        <div style="color: var(--text-secondary); font-size: 0.8em; margin-bottom: 8px;">1 YEAR</div>
-                        <div class="return-value" id="annual-return" style="color: var(--accent); font-size: 1.5em; font-weight: bold;">$0.00</div>
+                <!-- Comparison Table -->
+                <div style="margin-bottom: 20px;">
+                    <div style="color: var(--text-secondary); font-size: 0.85em; text-align: center; margin-bottom: 20px;" data-i18n="proj.title">📊 Projected future profits (if performance continues):</div>
+                    <div style="overflow-x: auto; background: var(--background); border-radius: 12px; border: 1px solid var(--border-color); padding: 5px;">
+                        <table style="width: 100%; border-collapse: separate; border-spacing: 0; text-align: center; font-size: 0.9em;">
+                            <thead>
+                                <tr>
+                                    <th style="padding: 15px 12px; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; font-size: 0.75em; letter-spacing: 0.5px; border-bottom: 2px solid var(--border-color);"></th>
+                                    <th style="padding: 15px 12px; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; font-size: 0.75em; letter-spacing: 0.5px; border-bottom: 2px solid var(--border-color);" data-i18n="proj.1month">+1 MONTH</th>
+                                    <th style="padding: 15px 12px; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; font-size: 0.75em; letter-spacing: 0.5px; border-bottom: 2px solid var(--border-color);" data-i18n="proj.6months">+6 MONTHS</th>
+                                    <th style="padding: 15px 12px; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; font-size: 0.75em; letter-spacing: 0.5px; border-bottom: 2px solid var(--border-color);" data-i18n="proj.1year">+1 YEAR</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Vice Algos - First (Green, highlighted) -->
+                                <tr style="background: linear-gradient(135deg, rgba(67, 255, 175, 0.15) 0%, rgba(107, 255, 216, 0.1) 100%);">
+                                    <td style="padding: 16px 12px; text-align: left; border-radius: 8px 0 0 8px;">
+                                        <span style="color: var(--accent); font-weight: bold;" data-i18n="compare.vice">🚀 VICE ALGOS</span>
+                                        <br><span style="color: var(--accent); font-size: 0.7em; opacity: 0.8;" id="vice-apy-label">~110% APY</span>
+                                    </td>
+                                    <td style="padding: 16px 12px; color: var(--accent); font-weight: bold; font-size: 1.1em; text-shadow: 0 0 10px rgba(67, 255, 175, 0.3);" id="vice-1m">+$110.00</td>
+                                    <td style="padding: 16px 12px; color: var(--accent); font-weight: bold; font-size: 1.1em; text-shadow: 0 0 10px rgba(67, 255, 175, 0.3);" id="vice-6m">+$660.00</td>
+                                    <td style="padding: 16px 12px; color: var(--accent); font-weight: bold; font-size: 1.1em; text-shadow: 0 0 10px rgba(67, 255, 175, 0.3); border-radius: 0 8px 8px 0;" id="vice-1y">+$1,320.00</td>
+                                </tr>
+                                <!-- S&P 500 - Middle (Yellow) -->
+                                <tr style="border-top: 1px solid var(--border-color);">
+                                    <td style="padding: 14px 12px; text-align: left;">
+                                        <span style="color: #f0ad4e;" data-i18n="compare.sp500">📈 S&P 500</span>
+                                        <br><span style="color: #f0ad4e; font-size: 0.7em; opacity: 0.7;">~10% APY</span>
+                                    </td>
+                                    <td style="padding: 14px 12px; color: #f0ad4e; font-weight: 600;" id="sp500-1m">+$8.33</td>
+                                    <td style="padding: 14px 12px; color: #f0ad4e; font-weight: 600;" id="sp500-6m">+$50.00</td>
+                                    <td style="padding: 14px 12px; color: #f0ad4e; font-weight: 600;" id="sp500-1y">+$100.00</td>
+                                </tr>
+                                <!-- Bank Savings - Last (Grey) -->
+                                <tr style="border-top: 1px solid var(--border-color);">
+                                    <td style="padding: 14px 12px; text-align: left;">
+                                        <span style="color: #888;" data-i18n="compare.bank">🏦 BANK SAVINGS</span>
+                                        <br><span style="color: #888; font-size: 0.7em; opacity: 0.7;">~4% APY</span>
+                                    </td>
+                                    <td style="padding: 14px 12px; color: #888; font-weight: 600;" id="bank-1m">+$3.33</td>
+                                    <td style="padding: 14px 12px; color: #888; font-weight: 600;" id="bank-6m">+$20.00</td>
+                                    <td style="padding: 14px 12px; color: #888; font-weight: 600;" id="bank-1y">+$40.00</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
                 
                 <div style="margin-top: 20px; text-align: center;">
-                    <small id="apr-note" style="color: var(--text-secondary); opacity: 0.7;">Based on current trading performance</small>
+                    <small id="apr-note" style="color: var(--text-secondary); opacity: 0.7;" data-i18n="calc.note">Based on actual vault performance</small>
                 </div>
             </div>
             
@@ -257,7 +314,7 @@
     </main>
     
     <footer>
-        <p>&copy; Vice Algos are made with Love. All rights reserved.</p>
+        <p data-i18n="footer">&copy; Vice Algos are made with Love. All rights reserved.</p>
     </footer>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
