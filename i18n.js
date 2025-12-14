@@ -14,6 +14,8 @@ const translations = {
         "stats.followers": "followers",
         "stats.return": "TRADING RETURN",
         "stats.return.note": "Pure PnL / Initial Capital",
+        "stats.return.last_30d": "last 30d",
+        "stats.return.avg_mo": "avg/mo",
         "stats.days": "DAYS ACTIVE",
         "stats.days.since": "Since Oct 1, 2025",
         
@@ -64,6 +66,8 @@ const translations = {
         "stats.followers": "investisseurs",
         "stats.return": "RENDEMENT TRADING",
         "stats.return.note": "PnL Pur / Capital Initial",
+        "stats.return.last_30d": "30 derniers jours",
+        "stats.return.avg_mo": "moyenne/mois",
         "stats.days": "JOURS ACTIFS",
         "stats.days.since": "Depuis le 1er Oct 2025",
         
@@ -160,6 +164,11 @@ function toggleLanguage() {
     // Re-run investment calculator to update dynamic text
     if (typeof updateInvestmentCalculator === 'function') {
         updateInvestmentCalculator();
+    }
+
+    // Re-render trading return subtitle (uses t()) without refetching
+    if (typeof window.updateTradingReturnSubtitle === 'function') {
+        window.updateTradingReturnSubtitle();
     }
 }
 
