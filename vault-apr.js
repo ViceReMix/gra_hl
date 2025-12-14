@@ -90,41 +90,185 @@ function updateVaultCapital(data) {
 }
 
 function updateTradingStats(data) {
-    // Calculate initial deposits and unrealized PnL from followers data
-    // Formula: initialDeposit = vaultEquity - unrealizedPnl
-    // Then: tradingReturn = totalUnrealizedPnl / totalInitialDeposit * 100
-    
-    let totalInitialDeposit = 0;
-    let totalUnrealizedPnl = 0;
-    
-    if (data.followers && data.followers.length > 0) {
-        data.followers.forEach(follower => {
-            const vaultEquity = parseFloat(follower.vaultEquity || 0);
-            const unrealizedPnl = parseFloat(follower.pnl || 0);
-            const initialDeposit = vaultEquity - unrealizedPnl;
-            
-            totalInitialDeposit += initialDeposit;
-            totalUnrealizedPnl += unrealizedPnl;
-            
-            console.log(`Follower: equity=$${vaultEquity.toFixed(2)}, pnl=$${unrealizedPnl.toFixed(2)}, initial=$${initialDeposit.toFixed(2)}`);
+    const getLegacyFollowerReturnPct = (vaultDetails) => {
+        let totalInitialDeposit = 0;
+        let totalUnrealizedPnl = 0;
+
+        if (vaultDetails.followers && vaultDetails.followers.length > 0) {
+            vaultDetails.followers.forEach(follower => {
+                const vaultEquity = parseFloat(follower.vaultEquity || 0);
+                const unrealizedPnl = parseFloat(follower.pnl || 0);
+                const initialDeposit = vaultEquity - unrealizedPnl;
+
+                totalInitialDeposit += initialDeposit;
+                totalUnrealizedPnl += unrealizedPnl;
+            });
+        }
+
+        if (totalInitialDeposit <= 0) return 0;
+        return (totalUnrealizedPnl / totalInitialDeposit) * 100;
+    };
+
+    const getPortfolioSeries = (vaultDetails, windowLabel = 'allTime') => {
+        const portfolio = vaultDetails && vaultDetails.portfolio;
+        if (!Array.isArray(portfolio)) return null;
+
+        const entry = portfolio.find(([label]) => label === windowLabel);
+        if (!entry || !entry[1]) return null;
+
+        const accountValueHistory = Array.isArray(entry[1].accountValueHistory)
+            ? entry[1].accountValueHistory
+            : null;
+        const pnlHistory = Array.isArray(entry[1].pnlHistory)
+            ? entry[1].pnlHistory
+            : null;
+
+        if (!accountValueHistory || accountValueHistory.length < 2) return null;
+
+        const toPoints = (arr) => arr
+            .map((pair) => ({
+                ts: pair && pair.length > 0 ? Number(pair[0]) : NaN,
+                value: pair && pair.length > 1 ? Number(pair[1]) : NaN
+            }))
+            .filter((p) => Number.isFinite(p.ts) && Number.isFinite(p.value))
+            .sort((a, b) => a.ts - b.ts);
+
+        return {
+            accountValue: toPoints(accountValueHistory),
+            pnl: pnlHistory ? toPoints(pnlHistory) : null
+        };
+    };
+
+    const trimSeriesToFirstPositiveCapital = (series) => {
+        if (!series || !Array.isArray(series.accountValue) || series.accountValue.length < 2) return null;
+        if (!Array.isArray(series.pnl) || series.pnl.length < 2) {
+            const idx = series.accountValue.findIndex((p) => Number.isFinite(p.value) && p.value > 0);
+            if (idx <= 0) return series;
+            return { ...series, accountValue: series.accountValue.slice(idx) };
+        }
+
+        const pnlSorted = [...series.pnl].sort((a, b) => a.ts - b.ts);
+        const maxDeltaMs = 15 * 60 * 1000;
+        let j = 0;
+        const netDepositsByAvIdx = new Array(series.accountValue.length).fill(null);
+
+        for (let i = 0; i < series.accountValue.length; i += 1) {
+            const av = series.accountValue[i];
+            if (!Number.isFinite(av.ts) || !Number.isFinite(av.value)) continue;
+
+            while (j + 1 < pnlSorted.length && pnlSorted[j + 1].ts <= av.ts) {
+                j += 1;
+            }
+
+            const candidates = [];
+            if (j >= 0 && j < pnlSorted.length) candidates.push(pnlSorted[j]);
+            if (j + 1 < pnlSorted.length) candidates.push(pnlSorted[j + 1]);
+
+            let best = null;
+            let bestDelta = Infinity;
+            candidates.forEach((c) => {
+                const d = Math.abs(c.ts - av.ts);
+                if (d < bestDelta) {
+                    bestDelta = d;
+                    best = c;
+                }
+            });
+
+            if (!best || !(bestDelta <= maxDeltaMs)) continue;
+            if (!Number.isFinite(best.value)) continue;
+
+            netDepositsByAvIdx[i] = av.value - best.value;
+        }
+
+        const idx = series.accountValue.findIndex((p, i) => {
+            const vOk = Number.isFinite(p.value) && p.value > 0;
+            const nd = netDepositsByAvIdx[i];
+            const ndOk = Number.isFinite(nd) ? nd > 0 : true;
+            return vOk && ndOk;
         });
-    }
-    
-    // Calculate trading return: Total Unrealized PnL / Total Initial Deposits
-    let tradingReturn = 0;
-    if (totalInitialDeposit > 0) {
-        tradingReturn = (totalUnrealizedPnl / totalInitialDeposit) * 100;
-    }
-    
+
+        if (idx <= 0) return series;
+        return { ...series, accountValue: series.accountValue.slice(idx) };
+    };
+
+    const computeFlowAdjustedTwrPct = (series) => {
+        if (!series || !Array.isArray(series.accountValue) || series.accountValue.length < 2) return null;
+        if (!Array.isArray(series.pnl) || series.pnl.length < 2) return null;
+
+        const pnlSorted = [...series.pnl].sort((a, b) => a.ts - b.ts);
+        const maxDeltaMs = 15 * 60 * 1000;
+        let j = 0;
+        const points = [];
+
+        for (let i = 0; i < series.accountValue.length; i += 1) {
+            const av = series.accountValue[i];
+            if (!Number.isFinite(av.ts) || !Number.isFinite(av.value)) continue;
+
+            while (j + 1 < pnlSorted.length && pnlSorted[j + 1].ts <= av.ts) {
+                j += 1;
+            }
+
+            const candidates = [];
+            if (j >= 0 && j < pnlSorted.length) candidates.push(pnlSorted[j]);
+            if (j + 1 < pnlSorted.length) candidates.push(pnlSorted[j + 1]);
+
+            let best = null;
+            let bestDelta = Infinity;
+            candidates.forEach((c) => {
+                const d = Math.abs(c.ts - av.ts);
+                if (d < bestDelta) {
+                    bestDelta = d;
+                    best = c;
+                }
+            });
+
+            if (!best || !(bestDelta <= maxDeltaMs)) continue;
+            if (!Number.isFinite(best.value)) continue;
+
+            points.push({ v: av.value, pnl: best.value });
+        }
+
+        if (points.length < 2) return null;
+
+        const nd = points.map((p) => ({ v: p.v, netDeposits: p.v - p.pnl }));
+
+        let growth = 1;
+        for (let i = 1; i < nd.length; i += 1) {
+            const prevV = nd[i - 1].v;
+            if (!(prevV > 0)) continue;
+
+            const flow = nd[i].netDeposits - nd[i - 1].netDeposits;
+            const adjEnd = nd[i].v - flow;
+            const r = (adjEnd / prevV) - 1;
+            if (!Number.isFinite(r)) continue;
+
+            growth *= (1 + r);
+        }
+
+        return (growth - 1) * 100;
+    };
+
+    const seriesAllTime = getPortfolioSeries(data, 'allTime');
+    const seriesSinceDeposit = trimSeriesToFirstPositiveCapital(seriesAllTime);
+    const tradingReturnFromPortfolio = computeFlowAdjustedTwrPct(seriesSinceDeposit);
+    const tradingReturn = tradingReturnFromPortfolio === null
+        ? getLegacyFollowerReturnPct(data)
+        : tradingReturnFromPortfolio;
+
+    const seriesMonth = getPortfolioSeries(data, 'month');
+    const monthReturnFromPortfolio = computeFlowAdjustedTwrPct(seriesMonth);
+
     // Calculate days active
     const now = new Date();
     const daysActive = Math.floor((now - VAULT_START_DATE) / (1000 * 60 * 60 * 24));
     
-    console.log(`Trading Stats: Initial Deposit = $${totalInitialDeposit.toFixed(2)}, Unrealized PnL = $${totalUnrealizedPnl.toFixed(2)}, Return = ${tradingReturn.toFixed(2)}%, Days = ${daysActive}`);
+    console.log(`Trading Stats: Return = ${tradingReturn.toFixed(2)}%, Days = ${daysActive}`);
     
     // Store globally for investment calculator
     window.tradingReturnPct = tradingReturn;
     window.daysActive = daysActive;
+    window.monthReturnPctLast30d = monthReturnFromPortfolio;
+    window.avgMonthlyReturnPct = daysActive > 0 ? (tradingReturn / daysActive) * 30 : null;
     
     // Update trading return display
     const totalReturnElement = document.getElementById('total-return');
@@ -132,6 +276,10 @@ function updateTradingStats(data) {
         const sign = tradingReturn >= 0 ? '+' : '';
         totalReturnElement.innerHTML = `${sign}${tradingReturn.toFixed(2)}%`;
         totalReturnElement.style.color = tradingReturn >= 0 ? 'var(--accent)' : '#ff6b6b';
+    }
+
+    if (typeof window.updateTradingReturnSubtitle === 'function') {
+        window.updateTradingReturnSubtitle();
     }
     
     // Update days active
@@ -143,6 +291,28 @@ function updateTradingStats(data) {
     // Update investment calculator with new trading return
     updateInvestmentCalculator();
 }
+
+window.updateTradingReturnSubtitle = function updateTradingReturnSubtitle() {
+    const subtitleEl = document.getElementById('trading-return-subtitle');
+    if (!subtitleEl) return;
+
+    const last30d = window.monthReturnPctLast30d;
+    const avgMo = window.avgMonthlyReturnPct;
+    const parts = [];
+
+    const last30dLabel = (typeof t === 'function') ? t('stats.return.last_30d') : 'last 30d';
+    const avgMoLabel = (typeof t === 'function') ? t('stats.return.avg_mo') : 'avg/mo';
+
+    if (typeof last30d === 'number' && Number.isFinite(last30d)) {
+        parts.push(`~${last30d.toFixed(1)}% ${last30dLabel}`);
+    }
+
+    if (typeof avgMo === 'number' && Number.isFinite(avgMo)) {
+        parts.push(`~${avgMo.toFixed(1)}% ${avgMoLabel}`);
+    }
+
+    subtitleEl.innerHTML = parts.join(' | ');
+};
 
 function updateAPRDisplay(aprPercentage, vaultName) {
     // Update APR display if element exists
@@ -205,19 +375,12 @@ function updateInvestmentCalculator() {
         const sign = periodReturnPct >= 0 ? '+' : '';
         profitPctDisplay.textContent = `(${sign}${periodReturnPct.toFixed(2)}% return)`;
     }
-    
-    // Update monthly rate display
-    const monthlyRateDisplay = document.getElementById('monthly-rate-display');
-    if (monthlyRateDisplay) {
-        const monthlyRate = dailyReturnPct * 30;
-        const monthLabel = (typeof t === 'function') ? t('calc.month') : '/month';
-        monthlyRateDisplay.textContent = `~${monthlyRate.toFixed(1)}%${monthLabel}`;
-    }
+
+    const monthlyReturnPct = dailyReturnPct * 30;
     
     // Calculate comparison returns for table
     const bankAPY = 0.04; // 4% annual
     const sp500APY = 0.10; // 10% annual
-    const monthlyReturnPct = dailyReturnPct * 30;
     
     // Calculate profits for each time period
     // Bank: 4% APY
