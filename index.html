@@ -37,16 +37,6 @@
             
             <!-- Vault Stats Row -->
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
-                <!-- APR Card -->
-                <div class="apr-card" style="background: linear-gradient(135deg, var(--component-bg) 0%, #2a2f3a 100%); border: 2px solid var(--accent); border-radius: 15px; padding: 25px; text-align: center; box-shadow: 0 8px 32px rgba(67, 255, 175, 0.1); position: relative; overflow: hidden;">
-                    <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent) 0%, #6bffd8 50%, var(--accent) 100%);"></div>
-                    <div style="margin-bottom: 8px; color: var(--text-secondary); font-size: 0.8em;" data-i18n="stats.apr">ANNUAL PERCENTAGE RATE</div>
-                    <div style="font-size: 2.5em; font-weight: bold; color: var(--accent); text-shadow: 0 0 20px rgba(67, 255, 175, 0.3);">
-                        <span id="vault-apr" style="color: var(--accent);">Loading...</span>
-                    </div>
-                    <div style="color: var(--text-secondary); font-size: 0.75em; opacity: 0.8; margin-top: 5px;" data-i18n="stats.apr.note">Based on last 30 days</div>
-                </div>
-                
                 <!-- Vault Capital Card -->
                 <div style="background: linear-gradient(135deg, var(--component-bg) 0%, #2a2f3a 100%); border: 2px solid #6bffd8; border-radius: 15px; padding: 25px; text-align: center; box-shadow: 0 8px 32px rgba(107, 255, 216, 0.1); position: relative; overflow: hidden;">
                     <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #6bffd8 0%, var(--accent) 50%, #6bffd8 100%);"></div>
@@ -55,6 +45,16 @@
                         <span id="vault-capital">Loading...</span>
                     </div>
                     <div style="color: var(--text-secondary); font-size: 0.75em; opacity: 0.8; margin-top: 5px;"><span id="follower-count">-</span> <span data-i18n="stats.followers">followers</span></div>
+                </div>
+
+                <!-- Days Active Card -->
+                <div style="background: linear-gradient(135deg, var(--component-bg) 0%, #2a2f3a 100%); border: 2px solid #6bffd8; border-radius: 15px; padding: 25px; text-align: center; box-shadow: 0 8px 32px rgba(107, 255, 216, 0.1); position: relative; overflow: hidden;">
+                    <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #6bffd8 0%, var(--accent) 50%, #6bffd8 100%);"></div>
+                    <div style="margin-bottom: 8px; color: var(--text-secondary); font-size: 0.8em;" data-i18n="stats.days">DAYS ACTIVE</div>
+                    <div style="font-size: 2.5em; font-weight: bold; color: #6bffd8; text-shadow: 0 0 20px rgba(107, 255, 216, 0.3);">
+                        <span id="days-active">0</span>
+                    </div>
+                    <div style="color: var(--text-secondary); font-size: 0.75em; opacity: 0.8; margin-top: 5px;" data-i18n="stats.days.since">Since Oct 1, 2025</div>
                 </div>
                 
                 <!-- Total Return Card -->
@@ -66,15 +66,15 @@
                     </div>
                     <div id="trading-return-subtitle" style="color: var(--text-secondary); font-size: 0.75em; opacity: 0.8; margin-top: 5px;">Loading...</div>
                 </div>
-                
-                <!-- Days Active Card -->
-                <div style="background: linear-gradient(135deg, var(--component-bg) 0%, #2a2f3a 100%); border: 2px solid #6bffd8; border-radius: 15px; padding: 25px; text-align: center; box-shadow: 0 8px 32px rgba(107, 255, 216, 0.1); position: relative; overflow: hidden;">
-                    <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #6bffd8 0%, var(--accent) 50%, #6bffd8 100%);"></div>
-                    <div style="margin-bottom: 8px; color: var(--text-secondary); font-size: 0.8em;" data-i18n="stats.days">DAYS ACTIVE</div>
-                    <div style="font-size: 2.5em; font-weight: bold; color: #6bffd8; text-shadow: 0 0 20px rgba(107, 255, 216, 0.3);">
-                        <span id="days-active">0</span>
+
+                <!-- APR Card -->
+                <div class="apr-card" style="background: linear-gradient(135deg, var(--component-bg) 0%, #2a2f3a 100%); border: 2px solid var(--accent); border-radius: 15px; padding: 25px; text-align: center; box-shadow: 0 8px 32px rgba(67, 255, 175, 0.1); position: relative; overflow: hidden;">
+                    <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent) 0%, #6bffd8 50%, var(--accent) 100%);"></div>
+                    <div style="margin-bottom: 8px; color: var(--text-secondary); font-size: 0.8em;" data-i18n="stats.apr">ANNUAL PERCENTAGE RATE</div>
+                    <div style="font-size: 2.5em; font-weight: bold; color: var(--accent); text-shadow: 0 0 20px rgba(67, 255, 175, 0.3);">
+                        <span id="vault-apr" style="color: var(--accent);">Loading...</span>
                     </div>
-                    <div style="color: var(--text-secondary); font-size: 0.75em; opacity: 0.8; margin-top: 5px;" data-i18n="stats.days.since">Since Oct 1, 2025</div>
+                    <div id="apr-note-text" style="color: var(--text-secondary); font-size: 0.75em; opacity: 0.8; margin-top: 5px;" data-i18n="stats.apr.note">Based on last 30 days</div>
                 </div>
             </div>
             
