@@ -21,36 +21,53 @@ const translations = {
         "stats.return.unavailable": "Portfolio history unavailable",
         "stats.days": "DAYS ACTIVE",
         "stats.days.since": "Since Oct 1, 2025",
+        "stats.days.started": "Vault started Oct 1, 2025",
+        "stats.avg_month": "AVG / MONTH",
         
         // Live data note
         "live.note": "*Live data from HyperLiquid",
         
         // Investment Time Machine
-        "calc.title": "🚀 Investment Time Machine",
-        "calc.invested": "If you had invested",
-        "calc.since": "Since vault inception on October 1st 2025",
-        "calc.days_ago": "days ago",
-        "calc.earned": "You would have earned",
-        "calc.return": "return",
         
         // Projected profits
-        "proj.title": "📊 Projected future profits (if performance continues):",
-        "proj.1month": "+1 MONTH",
-        "proj.6months": "+6 MONTHS",
-        "proj.1year": "+1 YEAR",
         
         // Comparison
-        "compare.title": "Compare with traditional investments over the same period:",
-        "compare.bank": "🏦 BANK SAVINGS",
-        "compare.sp500": "📈 S&P 500",
-        "compare.vice": "🚀 VICE ALGOS",
         
         // Footer note
-        "calc.note": "Based on actual vault performance",
-        "calc.month": "/month",
         
         // CTA Button
         "cta.join": "JOIN THE COPY TRADING ON HYPERLIQUID",
+
+        // Hero
+        "hero.tagline": "Systematic trading on HyperLiquid, transparent performance, copy-trade via vault.",
+
+        // Verified
+        "verified.link": "Don't Trust! Verify on HyperLiquid →",
+
+        // How it works
+        "how.title": "How it works",
+        "how.step1.title": "1) Deposit USDC into the vault",
+        "how.step1.link": "Open the HyperLiquid vault",
+        "how.step2.title": "2) Strategy trades automatically",
+        "how.step2.text": "Trades are executed systematically without your intervention.",
+        "how.step3.title": "3) Withdraw anytime",
+        "how.step3.text": "You can withdraw your funds whenever you want.",
+
+        // Risk
+        "risk.title": "Risk & assumptions",
+        "risk.text": "Not financial advice. Past performance does not guarantee future results. This is crypto and copy trading — drawdowns can be significant.",
+
+        // Alpha
+        "alpha.title": "Alpha vs Bitcoin (BTC)",
+        "alpha.subtitle": "Simple comparison since Oct 1, 2025: vault return minus BTC return.",
+        "alpha.btc_now": "BTC price now",
+        "alpha.btc_start": "Start price: $114,000 (Oct 1)",
+        "alpha.btc_return": "BTC return",
+        "alpha.btc_return_help": "How much BTC moved since start.",
+        "alpha.vault_return": "Vice vault return",
+        "alpha.vault_return_help": "The strategy performance since start.",
+        "alpha.excess": "Alpha (excess return)",
+        "alpha.excess_help": "Positive means you outperformed BTC.",
         
         // Footer
         "footer": "© Vice Algos are made with Love. All rights reserved."
@@ -76,36 +93,45 @@ const translations = {
         "stats.return.unavailable": "Historique du portefeuille indisponible",
         "stats.days": "JOURS ACTIFS",
         "stats.days.since": "Depuis le 1er Oct 2025",
+        "stats.days.started": "Vault lancé le 1er Oct 2025",
+        "stats.avg_month": "MOYENNE / MOIS",
         
         // Live data note
         "live.note": "*Données en direct de HyperLiquid",
         
-        // Investment Time Machine
-        "calc.title": "🚀 Machine à Remonter le Temps",
-        "calc.invested": "Si vous aviez investi",
-        "calc.since": "Depuis la création du portefeuille le 1er Octobre 2025",
-        "calc.days_ago": "jours",
-        "calc.earned": "Vous auriez gagné",
-        "calc.return": "rendement",
-        
-        // Projected profits
-        "proj.title": "📊 Profits futurs projetés (si la performance continue):",
-        "proj.1month": "+1 MOIS",
-        "proj.6months": "+6 MOIS",
-        "proj.1year": "+1 AN",
-        
-        // Comparison
-        "compare.title": "Comparez avec les investissements traditionnels sur la même période:",
-        "compare.bank": "🏦 ÉPARGNE BANCAIRE",
-        "compare.sp500": "📈 S&P 500",
-        "compare.vice": "🚀 VICE ALGOS",
-        
-        // Footer note
-        "calc.note": "Basé sur la performance réelle du vault",
-        "calc.month": "/mois",
-        
         // CTA Button
         "cta.join": "REJOIGNEZ LE COPY TRADING SUR HYPERLIQUID",
+
+        // Hero
+        "hero.tagline": "Trading algorithmique sur HyperLiquid, performance transparente, copy-trade via vault.",
+
+        // Verified
+        "verified.link": "Vérifiez l'historique des trades sur HyperLiquid en cliquant ici →",
+
+        // How it works
+        "how.title": "Comment ça marche?",
+        "how.step1.title": "1) Déposez vos USDC dans le vault Hyperliquid",
+        "how.step1.link": "Ouvrir le vault HyperLiquid",
+        "how.step2.title": "2) La stratégie trade automatiquement",
+        "how.step2.text": "Les trades sont exécutés systématiquement vous n'avez rien à faire.",
+        "how.step3.title": "3) Retirez à tout moment",
+        "how.step3.text": "Vous pouvez retirer vos fonds quand vous le souhaitez.",
+
+        // Risk
+        "risk.title": "Attention aux Risques Financiers",
+        "risk.text": "Les performances passées ne garantissent pas les résultats futurs.",
+
+        // Alpha
+        "alpha.title": "Alpha vs Bitcoin (BTC)",
+        "alpha.subtitle": "Comparaison de rendements depuis le 1er Oct 2025 : rendement du vault moins rendement du BTC.",
+        "alpha.btc_now": "Prix du BTC maintenant",
+        "alpha.btc_start": "Prix de départ : 114 000 $ (1er Oct)",
+        "alpha.btc_return": "Rendement BTC",
+        "alpha.btc_return_help": "Variation du BTC depuis le départ.",
+        "alpha.vault_return": "Rendement du vault",
+        "alpha.vault_return_help": "Performance de la stratégie depuis le départ.",
+        "alpha.excess": "Alpha (surperformance)",
+        "alpha.excess_help": "Positif = vous faites mieux que le BTC.",
         
         // Footer
         "footer": "© Vice Algos are made with Love. All rights reserved."
@@ -144,21 +170,6 @@ function updatePageLanguage() {
         langToggle.textContent = currentLang === 'en' ? '🇫🇷 FR' : '🇬🇧 EN';
         langToggle.title = currentLang === 'en' ? 'Passer en français' : 'Switch to English';
     }
-    
-    // Update days ago label dynamically
-    updateDaysAgoLabel();
-}
-
-// Update days ago label with current language
-function updateDaysAgoLabel() {
-    const daysAgoLabel = document.getElementById('days-ago-label');
-    if (daysAgoLabel && window.daysActive) {
-        if (currentLang === 'fr') {
-            daysAgoLabel.textContent = `${t('calc.since')} (${window.daysActive} ${t('calc.days_ago')})`;
-        } else {
-            daysAgoLabel.textContent = `${t('calc.since')} (${window.daysActive} ${t('calc.days_ago')})`;
-        }
-    }
 }
 
 // Toggle language
@@ -166,15 +177,19 @@ function toggleLanguage() {
     currentLang = currentLang === 'en' ? 'fr' : 'en';
     localStorage.setItem('preferredLang', currentLang);
     updatePageLanguage();
-    
-    // Re-run investment calculator to update dynamic text
-    if (typeof updateInvestmentCalculator === 'function') {
-        updateInvestmentCalculator();
-    }
 
     // Re-render trading return subtitle (uses t()) without refetching
     if (typeof window.updateTradingReturnSubtitle === 'function') {
         window.updateTradingReturnSubtitle();
+    }
+
+    // Re-render avg/month card subtitle (uses t()) without refetching
+    if (typeof window.updateAvgMonthlyCard === 'function') {
+        window.updateAvgMonthlyCard();
+    }
+
+    if (typeof window.updateAlphaSection === 'function') {
+        window.updateAlphaSection();
     }
 }
 
