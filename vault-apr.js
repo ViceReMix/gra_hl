@@ -29,13 +29,11 @@ async function fetchVaultAPR() {
         
         console.log('Vault API Response:', data);
         
-        if (data && data.apr !== undefined) {
+        if (data) {
             const aprDecimal = data.apr;
-            currentAPR = aprDecimal;
-            const aprPercentage = (aprDecimal * 100).toFixed(2);
-            
-            // Update the APR display
-            updateAPRDisplay(aprPercentage, data.name || "Vice Algos Vault");
+            currentAPR = typeof aprDecimal === 'number' ? aprDecimal : 0;
+
+            updateAPRDisplay(null, data.name || "Vice Algos Vault");
             
             // Calculate investment example
             updateInvestmentCalculator();
@@ -47,8 +45,8 @@ async function fetchVaultAPR() {
             updateTradingStats(data);
             
         } else {
-            console.error('Vault data not found or APR missing:', data);
-            displayError("Unable to fetch vault APR data");
+            console.error('Vault data not found:', data);
+            displayError("Unable to fetch vault data");
         }
         
     } catch (error) {
@@ -277,6 +275,19 @@ function updateTradingStats(data) {
         && Number.isFinite(tradingReturn)
         ? (tradingReturn / daysActive) * 30
         : null;
+
+    const projectedAprPct = typeof window.avgMonthlyReturnPct === 'number'
+        && Number.isFinite(window.avgMonthlyReturnPct)
+        ? window.avgMonthlyReturnPct * 12
+        : null;
+
+    window.projectedAprPct = projectedAprPct;
+
+    if (typeof projectedAprPct === 'number' && Number.isFinite(projectedAprPct)) {
+        updateAPRDisplay(projectedAprPct.toFixed(2), data.name || "Vice Algos Vault");
+    } else {
+        updateAPRDisplay(null, data.name || "Vice Algos Vault");
+    }
     
     // Update trading return display
     const totalReturnElement = document.getElementById('total-return');
@@ -338,13 +349,24 @@ function updateAPRDisplay(aprPercentage, vaultName) {
     // Update APR display if element exists
     const aprElement = document.getElementById('vault-apr');
     if (aprElement) {
-        aprElement.innerHTML = `${aprPercentage}%`;
+        if (typeof aprPercentage === 'string' && aprPercentage.length > 0) {
+            aprElement.innerHTML = `${aprPercentage}%`;
+        } else {
+            aprElement.innerHTML = 'N/A';
+        }
     }
     
     // Update vault name if element exists
     const nameElement = document.getElementById('vault-name');
     if (nameElement) {
         nameElement.innerHTML = vaultName;
+    }
+
+    const aprNote = document.getElementById('apr-note-text');
+    if (aprNote) {
+        aprNote.textContent = (typeof aprPercentage === 'string' && aprPercentage.length > 0)
+            ? ((typeof t === 'function') ? t('stats.apr.note.projected') : 'Projected from avg/mo')
+            : ((typeof t === 'function') ? t('stats.apr.note.unavailable') : 'Projection unavailable');
     }
 }
 
