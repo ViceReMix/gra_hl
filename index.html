@@ -4,19 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trading Performance Dashboard</title>
+    <meta name="description" content="Vice Algos — systematic trading on HyperLiquid with live vault performance stats and a transparent copy-trading vault.">
+    <link rel="canonical" href="https://vice.re/">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Vice Algos">
+    <meta property="og:title" content="Vice Algos — HyperLiquid Copy Trading Vault">
+    <meta property="og:description" content="Live vault stats and performance for Vice Algos on HyperLiquid.">
+    <meta property="og:url" content="https://vice.re/">
+    <meta property="og:image" content="https://vice.re/Vice_Logo.svg">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Vice Algos — HyperLiquid Copy Trading Vault">
+    <meta name="twitter:description" content="Live vault stats and performance for Vice Algos on HyperLiquid.">
+    <meta name="twitter:image" content="https://vice.re/Vice_Logo.svg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="styles.css">
     <script src="nav.js" defer></script>
     <script src="i18n.js" defer></script>
     <script src="vault-apr.js" defer></script>
 </head>
 <body>
-    <header style="display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap;">
-        <h1 style="margin: 0;">Vice Algos</h1>
+    <header class="site-header">
+        <h1 class="site-title">Vice Algos</h1>
         <!-- Language Toggle -->
-        <button id="lang-toggle" onclick="toggleLanguage()" 
-                style="background: var(--component-bg); border: 1px solid var(--accent); color: var(--accent); padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.8em; transition: all 0.3s ease;"
-                onmouseover="this.style.background='var(--accent)'; this.style.color='var(--background)';"
-                onmouseout="this.style.background='var(--component-bg)'; this.style.color='var(--accent)';">
+        <button id="lang-toggle" class="lang-toggle" onclick="toggleLanguage()">
             🇫🇷 FR
         </button>
     </header>
@@ -24,146 +38,125 @@
     <main>
         <!-- VAULT APR DISPLAY SECTION -->
         <div class="metrics-card">
-            <!-- Call to Action Button -->
-            <div style="margin-bottom: 30px; text-align: center;">
-                <a href="https://app.hyperliquid.xyz/vaults/0xccc01fa89e4163aaaa231d3d0a2943cc613bf2ea" target="_blank" class="glowing-btn">
-                    <span class="glowing-txt">J<span class="faulty-letter">O</span>IN</span>
-                    <span class="glowing-txt">TH<span class="faulty-letter">E</span> COPY</span>
-                    <span class="glowing-txt">TR<span class="faulty-letter">A</span>DING</span>
-                    <span class="glowing-txt">O<span class="faulty-letter">N</span></span>
-                    <span class="glowing-txt">HYP<span class="faulty-letter">E</span>RLIQUID</span>
-                </a>
-            </div>
+            <section class="hero">
+                <h2 class="hero__tagline" data-i18n="hero.tagline">Systematic trading on HyperLiquid, transparent performance, copy-trade via vault.</h2>
+                <div class="hero-separator" aria-hidden="true"></div>
+            </section>
             
             <!-- Vault Stats Row -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+            <div class="vault-stats-grid">
                 <!-- Vault Capital Card -->
-                <div style="background: linear-gradient(135deg, var(--component-bg) 0%, #2a2f3a 100%); border: 2px solid #6bffd8; border-radius: 15px; padding: 25px; text-align: center; box-shadow: 0 8px 32px rgba(107, 255, 216, 0.1); position: relative; overflow: hidden;">
-                    <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #6bffd8 0%, var(--accent) 50%, #6bffd8 100%);"></div>
-                    <div style="margin-bottom: 8px; color: var(--text-secondary); font-size: 0.8em;" data-i18n="stats.capital">VAULT CAPITAL</div>
-                    <div style="font-size: 2.5em; font-weight: bold; color: #6bffd8; text-shadow: 0 0 20px rgba(107, 255, 216, 0.3);">
+                <div class="vault-stat-card vault-stat-card--mint">
+                    <div class="vault-stat-card__topline vault-stat-card__topline--mint"></div>
+                    <div class="vault-stat-card__label" data-i18n="stats.capital">VAULT CAPITAL</div>
+                    <div class="vault-stat-card__value vault-stat-card__value--mint">
                         <span id="vault-capital">Loading...</span>
                     </div>
-                    <div style="color: var(--text-secondary); font-size: 0.75em; opacity: 0.8; margin-top: 5px;"><span id="follower-count">-</span> <span data-i18n="stats.followers">followers</span></div>
+                    <div class="vault-stat-card__subtext"><span id="follower-count">-</span> <span data-i18n="stats.followers">followers</span></div>
                 </div>
 
                 <!-- Days Active Card -->
-                <div style="background: linear-gradient(135deg, var(--component-bg) 0%, #2a2f3a 100%); border: 2px solid #6bffd8; border-radius: 15px; padding: 25px; text-align: center; box-shadow: 0 8px 32px rgba(107, 255, 216, 0.1); position: relative; overflow: hidden;">
-                    <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #6bffd8 0%, var(--accent) 50%, #6bffd8 100%);"></div>
-                    <div style="margin-bottom: 8px; color: var(--text-secondary); font-size: 0.8em;" data-i18n="stats.days">DAYS ACTIVE</div>
-                    <div style="font-size: 2.5em; font-weight: bold; color: #6bffd8; text-shadow: 0 0 20px rgba(107, 255, 216, 0.3);">
+                <div class="vault-stat-card vault-stat-card--mint">
+                    <div class="vault-stat-card__topline vault-stat-card__topline--mint"></div>
+                    <div class="vault-stat-card__label" data-i18n="stats.days">DAYS ACTIVE</div>
+                    <div class="vault-stat-card__value vault-stat-card__value--mint">
                         <span id="days-active">0</span>
                     </div>
-                    <div style="color: var(--text-secondary); font-size: 0.75em; opacity: 0.8; margin-top: 5px;" data-i18n="stats.days.since">Since Oct 1, 2025</div>
+                    <div class="vault-stat-card__subtext" data-i18n="stats.days.started">Vault started Oct 1, 2025</div>
                 </div>
                 
                 <!-- Total Return Card -->
-                <div style="background: linear-gradient(135deg, var(--component-bg) 0%, #2a2f3a 100%); border: 2px solid var(--accent); border-radius: 15px; padding: 25px; text-align: center; box-shadow: 0 8px 32px rgba(67, 255, 175, 0.1); position: relative; overflow: hidden;">
-                    <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent) 0%, #6bffd8 50%, var(--accent) 100%);"></div>
-                    <div style="margin-bottom: 8px; color: var(--text-secondary); font-size: 0.8em;" data-i18n="stats.return">TRADING RETURN</div>
-                    <div style="font-size: 2.5em; font-weight: bold; color: var(--accent); text-shadow: 0 0 20px rgba(67, 255, 175, 0.3);">
+                <div class="vault-stat-card vault-stat-card--mint">
+                    <div class="vault-stat-card__topline vault-stat-card__topline--mint"></div>
+                    <div class="vault-stat-card__label" data-i18n="stats.return">TRADING RETURN</div>
+                    <div class="vault-stat-card__value vault-stat-card__value--mint">
                         <span id="total-return">Loading...</span>
                     </div>
-                    <div id="trading-return-subtitle" style="color: var(--text-secondary); font-size: 0.75em; opacity: 0.8; margin-top: 5px;">Loading...</div>
+                    <div id="trading-return-subtitle" class="vault-stat-card__subtext">Loading...</div>
+                </div>
+
+                <!-- Avg / Month Card -->
+                <div class="vault-stat-card vault-stat-card--mint">
+                    <div class="vault-stat-card__topline vault-stat-card__topline--mint"></div>
+                    <div class="vault-stat-card__label" data-i18n="stats.avg_month">AVG / MONTH</div>
+                    <div class="vault-stat-card__value vault-stat-card__value--mint">
+                        <span id="avg-monthly-return">Loading...</span>
+                    </div>
+                    <div id="last-30d-subtitle" class="vault-stat-card__subtext">Loading...</div>
                 </div>
 
                 <!-- APR Card -->
-                <div class="apr-card" style="background: linear-gradient(135deg, var(--component-bg) 0%, #2a2f3a 100%); border: 2px solid var(--accent); border-radius: 15px; padding: 25px; text-align: center; box-shadow: 0 8px 32px rgba(67, 255, 175, 0.1); position: relative; overflow: hidden;">
-                    <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent) 0%, #6bffd8 50%, var(--accent) 100%);"></div>
-                    <div style="margin-bottom: 8px; color: var(--text-secondary); font-size: 0.8em;" data-i18n="stats.apr">ANNUAL PERCENTAGE RATE</div>
-                    <div style="font-size: 2.5em; font-weight: bold; color: var(--accent); text-shadow: 0 0 20px rgba(67, 255, 175, 0.3);">
-                        <span id="vault-apr" style="color: var(--accent);">Loading...</span>
+                <div class="apr-card vault-stat-card vault-stat-card--mint">
+                    <div class="vault-stat-card__topline vault-stat-card__topline--mint"></div>
+                    <div class="vault-stat-card__label" data-i18n="stats.apr">ANNUAL PERCENTAGE RATE</div>
+                    <div class="vault-stat-card__value vault-stat-card__value--mint">
+                        <span id="vault-apr" class="vault-stat-card__inline-mint">Loading...</span>
                     </div>
-                    <div id="apr-note-text" style="color: var(--text-secondary); font-size: 0.75em; opacity: 0.8; margin-top: 5px;" data-i18n="stats.apr.note">Based on last 30 days</div>
+                    <div id="apr-note-text" class="vault-stat-card__subtext" data-i18n="stats.apr.note">Based on last 30 days</div>
                 </div>
             </div>
-            
-            <div style="color: var(--text-secondary); font-size: 0.85em; opacity: 0.8; text-align: center; margin: 20px 0;" data-i18n="live.note">*Live data from HyperLiquid</div>
-            
-            <!-- Interactive Investment Calculator -->
-            <div class="calculator-card" style="background: var(--component-bg); border-radius: 15px; padding: 30px; border: 1px solid var(--border-color);">
-                <h3 style="margin-bottom: 25px; color: var(--text-primary); text-align: center;" data-i18n="calc.title">
-                    🚀 Investment Time Machine
-                </h3>
-                
-                <!-- Fixed Investment Amount -->
-                <div style="margin-bottom: 20px; text-align: center;">
-                    <label style="display: block; color: var(--text-secondary); margin-bottom: 10px; font-size: 0.9em;" data-i18n="calc.invested">If you had invested</label>
-                    <span style="color: var(--accent); font-size: 2em; font-weight: bold;">$1,000</span>
-                    <input type="hidden" id="investment-input" value="1000">
-                </div>
-                
-                <!-- Simple date text -->
-                <div style="text-align: center; margin-bottom: 25px; color: var(--text-secondary); font-size: 0.9em;">
-                    <span id="days-ago-label">Since vault inception on October 1st 2025 (70 days ago)</span>
-                </div>
-                
-                <!-- Big Result Display -->
-                <div style="text-align: center; margin-bottom: 25px; padding: 25px; background: linear-gradient(135deg, rgba(67, 255, 175, 0.1) 0%, rgba(107, 255, 216, 0.1) 100%); border-radius: 15px; border: 2px solid var(--accent);">
-                    <div style="color: var(--text-secondary); font-size: 0.9em; margin-bottom: 10px;" data-i18n="calc.earned">You would have earned</div>
-                    <div id="profit-display" style="font-size: 3em; font-weight: bold; color: var(--accent); text-shadow: 0 0 30px rgba(67, 255, 175, 0.4);">
-                        +$212.02
-                    </div>
-                    <div style="margin-top: 10px; color: var(--text-secondary); font-size: 0.9em;">
-                        <span id="profit-pct-display">(+21.20% return)</span>
-                    </div>
-                </div>
-                
-                <!-- Comparison Table -->
-                <div style="margin-bottom: 20px;">
-                    <div style="color: var(--text-secondary); font-size: 0.85em; text-align: center; margin-bottom: 20px;" data-i18n="proj.title">📊 Projected future profits (if performance continues):</div>
-                    <div style="overflow-x: auto; background: var(--background); border-radius: 12px; border: 1px solid var(--border-color); padding: 5px;">
-                        <table style="width: 100%; border-collapse: separate; border-spacing: 0; text-align: center; font-size: 0.9em;">
-                            <thead>
-                                <tr>
-                                    <th style="padding: 15px 12px; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; font-size: 0.75em; letter-spacing: 0.5px; border-bottom: 2px solid var(--border-color);"></th>
-                                    <th style="padding: 15px 12px; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; font-size: 0.75em; letter-spacing: 0.5px; border-bottom: 2px solid var(--border-color);" data-i18n="proj.1month">+1 MONTH</th>
-                                    <th style="padding: 15px 12px; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; font-size: 0.75em; letter-spacing: 0.5px; border-bottom: 2px solid var(--border-color);" data-i18n="proj.6months">+6 MONTHS</th>
-                                    <th style="padding: 15px 12px; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; font-size: 0.75em; letter-spacing: 0.5px; border-bottom: 2px solid var(--border-color);" data-i18n="proj.1year">+1 YEAR</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Vice Algos - First (Green, highlighted) -->
-                                <tr style="background: linear-gradient(135deg, rgba(67, 255, 175, 0.15) 0%, rgba(107, 255, 216, 0.1) 100%);">
-                                    <td style="padding: 16px 12px; text-align: left; border-radius: 8px 0 0 8px;">
-                                        <span style="color: var(--accent); font-weight: bold;" data-i18n="compare.vice">🚀 VICE ALGOS</span>
-                                        <br><span style="color: var(--accent); font-size: 0.7em; opacity: 0.8;" id="vice-apy-label">~110% APY</span>
-                                    </td>
-                                    <td style="padding: 16px 12px; color: var(--accent); font-weight: bold; font-size: 1.1em; text-shadow: 0 0 10px rgba(67, 255, 175, 0.3);" id="vice-1m">+$110.00</td>
-                                    <td style="padding: 16px 12px; color: var(--accent); font-weight: bold; font-size: 1.1em; text-shadow: 0 0 10px rgba(67, 255, 175, 0.3);" id="vice-6m">+$660.00</td>
-                                    <td style="padding: 16px 12px; color: var(--accent); font-weight: bold; font-size: 1.1em; text-shadow: 0 0 10px rgba(67, 255, 175, 0.3); border-radius: 0 8px 8px 0;" id="vice-1y">+$1,320.00</td>
-                                </tr>
-                                <!-- S&P 500 - Middle (Yellow) -->
-                                <tr style="border-top: 1px solid var(--border-color);">
-                                    <td style="padding: 14px 12px; text-align: left;">
-                                        <span style="color: #f0ad4e;" data-i18n="compare.sp500">📈 S&P 500</span>
-                                        <br><span style="color: #f0ad4e; font-size: 0.7em; opacity: 0.7;">~10% APY</span>
-                                    </td>
-                                    <td style="padding: 14px 12px; color: #f0ad4e; font-weight: 600;" id="sp500-1m">+$8.33</td>
-                                    <td style="padding: 14px 12px; color: #f0ad4e; font-weight: 600;" id="sp500-6m">+$50.00</td>
-                                    <td style="padding: 14px 12px; color: #f0ad4e; font-weight: 600;" id="sp500-1y">+$100.00</td>
-                                </tr>
-                                <!-- Bank Savings - Last (Grey) -->
-                                <tr style="border-top: 1px solid var(--border-color);">
-                                    <td style="padding: 14px 12px; text-align: left;">
-                                        <span style="color: #888;" data-i18n="compare.bank">🏦 BANK SAVINGS</span>
-                                        <br><span style="color: #888; font-size: 0.7em; opacity: 0.7;">~4% APY</span>
-                                    </td>
-                                    <td style="padding: 14px 12px; color: #888; font-weight: 600;" id="bank-1m">+$3.33</td>
-                                    <td style="padding: 14px 12px; color: #888; font-weight: 600;" id="bank-6m">+$20.00</td>
-                                    <td style="padding: 14px 12px; color: #888; font-weight: 600;" id="bank-1y">+$40.00</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                
-                <div style="margin-top: 20px; text-align: center;">
-                    <small id="apr-note" style="color: var(--text-secondary); opacity: 0.7;" data-i18n="calc.note">Based on actual vault performance</small>
-                </div>
+
+            <div class="verified-link">
+                <a class="verified-link__a" href="https://app.hyperliquid.xyz/vaults/0xccc01fa89e4163aaaa231d3d0a2943cc613bf2ea" target="_blank" rel="noopener noreferrer" data-i18n="verified.link">Verified on HyperLiquid →</a>
             </div>
+
+            <div class="section-separator" aria-hidden="true"></div>
+
+            <section class="how-it-works">
+                <h3 class="how-it-works__title" data-i18n="how.title">How it works</h3>
+                <div class="how-it-works__steps">
+                    <div class="how-it-works__step">
+                        <div class="how-it-works__step-title" data-i18n="how.step1.title">1) Deposit USDC into the vault</div>
+                        <div class="how-it-works__step-text">
+                            <a class="how-it-works__link" href="https://app.hyperliquid.xyz/vaults/0xccc01fa89e4163aaaa231d3d0a2943cc613bf2ea" target="_blank" rel="noopener noreferrer" data-i18n="how.step1.link">Open the HyperLiquid vault</a>
+                        </div>
+                    </div>
+                    <div class="how-it-works__step">
+                        <div class="how-it-works__step-title" data-i18n="how.step2.title">2) Strategy trades automatically</div>
+                        <div class="how-it-works__step-text" data-i18n="how.step2.text">Trades are executed systematically based on predefined rules.</div>
+                    </div>
+                    <div class="how-it-works__step">
+                        <div class="how-it-works__step-title" data-i18n="how.step3.title">3) Withdraw anytime</div>
+                        <div class="how-it-works__step-text" data-i18n="how.step3.text">You can withdraw your funds whenever you want.</div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="section-separator" aria-hidden="true"></div>
+
+            <section class="alpha-section" aria-label="Alpha vs BTC">
+                <h3 class="alpha-section__title" data-i18n="alpha.title">Alpha vs Bitcoin (BTC)</h3>
+                <div class="alpha-section__subtitle" data-i18n="alpha.subtitle">Simple comparison since Oct 1, 2025: vault return minus BTC return.</div>
+                <div class="alpha-grid">
+                    <div class="alpha-card">
+                        <div class="alpha-card__label" data-i18n="alpha.btc_now">BTC price now</div>
+                        <div class="alpha-card__value" id="btc-price-now">Loading...</div>
+                        <div class="alpha-card__subtext" data-i18n="alpha.btc_start">Start price: $114,000 (Oct 1)</div>
+                    </div>
+                    <div class="alpha-card">
+                        <div class="alpha-card__label" data-i18n="alpha.btc_return">BTC return</div>
+                        <div class="alpha-card__value" id="btc-return">Loading...</div>
+                        <div class="alpha-card__subtext" data-i18n="alpha.btc_return_help">How much BTC moved since start.</div>
+                    </div>
+                    <div class="alpha-card">
+                        <div class="alpha-card__label" data-i18n="alpha.vault_return">Vice vault return</div>
+                        <div class="alpha-card__value" id="vault-return">Loading...</div>
+                        <div class="alpha-card__subtext" data-i18n="alpha.vault_return_help">Vault returns since Oct 1, 2025.</div>
+                    </div>
+                    <div class="alpha-card alpha-card--highlight">
+                        <div class="alpha-card__label" data-i18n="alpha.excess">Alpha (excess return)</div>
+                        <div class="alpha-card__value" id="alpha-excess">Loading...</div>
+                        <div class="alpha-card__subtext" data-i18n="alpha.excess_help">Positive means you outperformed BTC.</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="risk-box">
+                <h3 class="risk-box__title" data-i18n="risk.title">Risk & assumptions</h3>
+                <div class="risk-box__text" data-i18n="risk.text">Not financial advice. Past performance does not guarantee future results. This is crypto and copy trading — drawdowns can be significant.</div>
+            </section>
             
-            <div style="margin-top: 30px; text-align: center;">
+            <div class="cta-container cta-container--bottom">
                 <a href="https://app.hyperliquid.xyz/vaults/0xccc01fa89e4163aaaa231d3d0a2943cc613bf2ea" target="_blank" class="glowing-btn">
                     <span class="glowing-txt">J<span class="faulty-letter">O</span>IN</span>
                     <span class="glowing-txt">TH<span class="faulty-letter">E</span> COPY</span>
@@ -174,149 +167,13 @@
             </div>
         </div>
         
-        <!-- DASHBOARD CONTENT TEMPORARILY HIDDEN - UNCOMMENT TO RESTORE -->
-        <!--
-        <div class="dashboard-container">
-            <div class="metrics-card">
-                <p id="last-updated">Loading...</p>
-                
-                <div class="filter-buttons">
-                    <button class="filter-btn active" data-filter="total">Total</button>
-                    <button class="filter-btn" data-filter="long">Long</button>
-                    <button class="filter-btn" data-filter="short">Short</button>
-                </div>
-                
-                <div class="metrics-grid">
-                    <div class="metric">
-                        <div class="metric-label">Win Rate</div>
-                        <div class="metric-value" id="win-rate">--</div>
-                    </div>
-                    
-                    <div class="metric">
-                        <div class="metric-label">Total Trades</div>
-                        <div class="metric-value" id="total-trades">--</div>
-                    </div>
-                    
-                    <div class="metric">
-                        <div class="metric-label">Avg Win</div>
-                        <div class="metric-value" id="avg-win">--</div>
-                    </div>
-                    
-                    <div class="metric">
-                        <div class="metric-label">Avg Loss</div>
-                        <div class="metric-value" id="avg-loss">--</div>
-                    </div>
-                    
-                    <div class="metric">
-                        <div class="metric-label">Avg Position Size</div>
-                        <div class="metric-value" id="avg-position-size">--</div>
-                    </div>
-                    
-                    <div class="metric">
-                        <div class="metric-label">Avg Duration</div>
-                        <div class="metric-value" id="avg-duration">--</div>
-                    </div>
-                    
-                    <div class="metric">
-                        <div class="metric-label">Sharpe Ratio</div>
-                        <div class="metric-value" id="sharpe-ratio">--</div>
-                    </div>
-                    
-                    <div class="metric">
-                        <div class="metric-label">Calmar Ratio</div>
-                        <div class="metric-value" id="calmar-ratio">--</div>
-                    </div>
-                    
-                    <div class="metric">
-                        <div class="metric-label">Best Trade</div>
-                        <div class="metric-value" id="max-profit">--</div>
-                    </div>
-                    
-                    <div class="metric">
-                        <div class="metric-label">Worst Trade</div>
-                        <div class="metric-value" id="max-drawdown">--</div>
-                    </div>
-                    
-                    <div class="metric">
-                        <div class="metric-label">Max Consecutive Wins</div>
-                        <div class="metric-value" id="max-consecutive-wins">--</div>
-                    </div>
-                    
-                    <div class="metric">
-                        <div class="metric-label">Max Consecutive Losses</div>
-                        <div class="metric-value" id="max-consecutive-losses">--</div>
-                    </div>
-                    
-                    <div class="metric">
-                        <div class="metric-label">Kelly Criterion</div>
-                        <div class="metric-value" id="kelly-criterion">--</div>
-                    </div>
-                    
-                    <div class="metric">
-                        <div class="metric-label">Return Means</div>
-                        <div class="metric-value" id="return-means">--</div>
-                    </div>
-                    
-                    <div class="metric">
-                        <div class="metric-label">Returns Skew</div>
-                        <div class="metric-value" id="returns-skew">--</div>
-                    </div>
-
-                    <div class="metric">
-                        <div class="metric-label">Avg Return / Trade</div>
-                        <div class="metric-value" id="equity-weighted-return">--</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="metrics-card">
-                <a href="https://app.hyperliquid.xyz/vaults/0xccc01fa89e4163aaaa231d3d0a2943cc613bf2ea" target="_blank" class="glowing-btn">
-                    <span class="glowing-txt">J<span class="faulty-letter">O</span>IN</span>
-                    <span class="glowing-txt">TH<span class="faulty-letter">E</span> COPY</span>
-                    <span class="glowing-txt">TR<span class="faulty-letter">A</span>DING</span>
-                    <span class="glowing-txt">O<span class="faulty-letter">N</span></span>
-                    <span class="glowing-txt">HYP<span class="faulty-letter">E</span>RLIQUID</span>
-                </a>
-            </div>
-            
-            <div class="chart-container">
-                <h2>Cumulative Portfolio Returns</h2>
-                <canvas id="pnl-chart" class="chart"></canvas>
-            </div>
-            
-            <div class="chart-container">
-                <h2>Risk/Reward: Maximum Adverse Execution vs Maximum Favorable Execution</h2>
-                <canvas id="risk-reward-chart" class="chart"></canvas>
-            </div>
-            
-            <div class="metrics-card">
-                <a href="https://app.hyperliquid.xyz/vaults/0xccc01fa89e4163aaaa231d3d0a2943cc613bf2ea" target="_blank" class="glowing-btn">
-                    <span class="glowing-txt">VER<span class="faulty-letter">I</span>FY</span>
-                    <span class="glowing-txt">TH<span class="faulty-letter">E</span></span>
-                    <span class="glowing-txt">TR<span class="faulty-letter">A</span>DES</span>
-                    <span class="glowing-txt">O<span class="faulty-letter">N</span></span>
-                    <span class="glowing-txt">HYP<span class="faulty-letter">E</span>RLIQUID</span>
-                </a>
-            </div>
-            
-            <div class="chart-container">
-                <h2>PnL Distribution</h2>
-                <canvas id="pnl-distribution-chart" class="chart"></canvas>
-            </div>
-            
-            <div class="chart-container">
-                <h2>Duration Distribution</h2>
-                <canvas id="duration-distribution-chart" class="chart"></canvas>
-            </div>
-        </div>
-        -->
+      
     </main>
     
     <footer>
         <p data-i18n="footer">&copy; Vice Algos are made with Love. All rights reserved.</p>
     </footer>
     
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="dashboard.js"></script>
+    
 </body>
 </html>
