@@ -9,13 +9,16 @@ const translations = {
         
         // Stat cards
         "stats.apr": "ANNUAL PERCENTAGE RATE",
-        "stats.apr.note": "Based on last 30 days",
+        "stats.apr.note": "Projected from avg/mo",
+        "stats.apr.note.projected": "Projected from avg/mo",
+        "stats.apr.note.unavailable": "Projection unavailable",
         "stats.capital": "VAULT CAPITAL",
         "stats.followers": "followers",
         "stats.return": "TRADING RETURN",
         "stats.return.note": "Pure PnL / Initial Capital",
         "stats.return.last_30d": "last 30d",
         "stats.return.avg_mo": "avg/mo",
+        "stats.return.unavailable": "Portfolio history unavailable",
         "stats.days": "DAYS ACTIVE",
         "stats.days.since": "Since Oct 1, 2025",
         
@@ -61,13 +64,16 @@ const translations = {
         
         // Stat cards
         "stats.apr": "TAUX DE RENDEMENT ANNUEL",
-        "stats.apr.note": "Basé sur les 30 derniers jours",
+        "stats.apr.note": "Projection basée sur la moyenne mensuelle",
+        "stats.apr.note.projected": "Projection basée sur la moyenne mensuelle",
+        "stats.apr.note.unavailable": "Projection indisponible",
         "stats.capital": "CAPITAL DU VAULT",
         "stats.followers": "investisseurs",
         "stats.return": "RENDEMENT TRADING",
         "stats.return.note": "PnL Pur / Capital Initial",
         "stats.return.last_30d": "30 derniers jours",
         "stats.return.avg_mo": "moyenne/mois",
+        "stats.return.unavailable": "Historique du portefeuille indisponible",
         "stats.days": "JOURS ACTIFS",
         "stats.days.since": "Depuis le 1er Oct 2025",
         
