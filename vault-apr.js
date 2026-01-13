@@ -5,6 +5,65 @@ let vaultData = null;
 // Vault start date
 const VAULT_START_DATE = new Date('2025-10-01');
 
+// BTC reference price for the alpha comparison
+const BTC_START_PRICE_USD = 114000;
+
+async function fetchBtcPriceNow() {
+    const resp = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT', {
+        method: 'GET'
+    });
+    if (!resp.ok) {
+        throw new Error(`Binance HTTP error! status: ${resp.status}`);
+    }
+    const data = await resp.json();
+    const price = Number(data && data.price);
+    if (!Number.isFinite(price)) {
+        throw new Error('Invalid BTC price response');
+    }
+    return price;
+}
+
+function fmtUsd(v) {
+    if (!Number.isFinite(v)) return 'N/A';
+    return `$${v.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
+}
+
+function fmtPct(v) {
+    if (!Number.isFinite(v)) return 'N/A';
+    const sign = v >= 0 ? '+' : '';
+    return `${sign}${v.toFixed(2)}%`;
+}
+
+async function updateAlphaSection() {
+    const elBtcNow = document.getElementById('btc-price-now');
+    const elBtcRet = document.getElementById('btc-return');
+    const elVaultRet = document.getElementById('vault-return');
+    const elAlpha = document.getElementById('alpha-excess');
+    if (!elBtcNow || !elBtcRet || !elVaultRet || !elAlpha) return;
+
+    const vaultRet = window.tradingReturnPct;
+    elVaultRet.textContent = (typeof vaultRet === 'number' && Number.isFinite(vaultRet)) ? fmtPct(vaultRet) : 'N/A';
+
+    try {
+        const btcNow = await fetchBtcPriceNow();
+        const btcRet = ((btcNow / BTC_START_PRICE_USD) - 1) * 100;
+        const alpha = (typeof vaultRet === 'number' && Number.isFinite(vaultRet)) ? (vaultRet - btcRet) : NaN;
+
+        elBtcNow.textContent = fmtUsd(btcNow);
+        elBtcRet.textContent = fmtPct(btcRet);
+        elAlpha.textContent = fmtPct(alpha);
+        elAlpha.style.color = Number.isFinite(alpha) && alpha >= 0 ? '' : '#ff6b6b';
+    } catch (e) {
+        console.error('Error updating BTC alpha section:', e);
+        elBtcNow.textContent = 'N/A';
+        elBtcRet.textContent = 'N/A';
+        elAlpha.textContent = 'N/A';
+        elAlpha.style.color = 'var(--text-secondary)';
+    }
+}
+
+window.updateAlphaSection = updateAlphaSection;
+
 async function fetchVaultAPR() {
     const vaultAddress = "0xccc01fa89e4163aaaa231d3d0a2943cc613bf2ea";
     
@@ -34,9 +93,6 @@ async function fetchVaultAPR() {
             currentAPR = typeof aprDecimal === 'number' ? aprDecimal : 0;
 
             updateAPRDisplay(null, data.name || "Vice Algos Vault");
-            
-            // Calculate investment example
-            updateInvestmentCalculator();
             
             // Update vault capital display
             updateVaultCapital(data);
@@ -295,7 +351,11 @@ function updateTradingStats(data) {
         if (typeof tradingReturn === 'number' && Number.isFinite(tradingReturn)) {
             const sign = tradingReturn >= 0 ? '+' : '';
             totalReturnElement.innerHTML = `${sign}${tradingReturn.toFixed(2)}%`;
-            totalReturnElement.style.color = tradingReturn >= 0 ? 'var(--accent)' : '#ff6b6b';
+            if (tradingReturn >= 0) {
+                totalReturnElement.style.color = '';
+            } else {
+                totalReturnElement.style.color = '#ff6b6b';
+            }
         } else {
             totalReturnElement.innerHTML = 'N/A';
             totalReturnElement.style.color = 'var(--text-secondary)';
@@ -312,6 +372,10 @@ function updateTradingStats(data) {
     if (typeof window.updateTradingReturnSubtitle === 'function') {
         window.updateTradingReturnSubtitle();
     }
+
+    updateAvgMonthlyCard();
+
+    updateAlphaSection();
     
     // Update days active
     const daysActiveElement = document.getElementById('days-active');
@@ -320,30 +384,54 @@ function updateTradingStats(data) {
     }
     
     // Update investment calculator with new trading return
-    updateInvestmentCalculator();
+    
 }
 
 window.updateTradingReturnSubtitle = function updateTradingReturnSubtitle() {
     const subtitleEl = document.getElementById('trading-return-subtitle');
     if (!subtitleEl) return;
 
-    const last30d = window.monthReturnPctLast30d;
-    const avgMo = window.avgMonthlyReturnPct;
-    const parts = [];
-
-    const last30dLabel = (typeof t === 'function') ? t('stats.return.last_30d') : 'last 30d';
-    const avgMoLabel = (typeof t === 'function') ? t('stats.return.avg_mo') : 'avg/mo';
-
-    if (typeof last30d === 'number' && Number.isFinite(last30d)) {
-        parts.push(`~${last30d.toFixed(1)}% ${last30dLabel}`);
+    const totalReturnPct = window.tradingReturnPct;
+    if (typeof totalReturnPct === 'number' && Number.isFinite(totalReturnPct)) {
+        subtitleEl.textContent = (typeof t === 'function')
+            ? t('stats.days.since')
+            : 'Since Oct 1, 2025';
+        return;
     }
+
+    subtitleEl.textContent = (typeof t === 'function')
+        ? t('stats.return.unavailable')
+        : 'Portfolio history unavailable';
+};
+
+function updateAvgMonthlyCard() {
+    const avgEl = document.getElementById('avg-monthly-return');
+    const subEl = document.getElementById('last-30d-subtitle');
+    if (!avgEl || !subEl) return;
+
+    const avgMo = window.avgMonthlyReturnPct;
+    const last30d = window.monthReturnPctLast30d;
 
     if (typeof avgMo === 'number' && Number.isFinite(avgMo)) {
-        parts.push(`~${avgMo.toFixed(1)}% ${avgMoLabel}`);
+        const sign = avgMo >= 0 ? '+' : '';
+        avgEl.textContent = `${sign}${avgMo.toFixed(2)}%`;
+        avgEl.style.color = '';
+    } else {
+        avgEl.textContent = 'N/A';
+        avgEl.style.color = 'var(--text-secondary)';
     }
 
-    subtitleEl.innerHTML = parts.join(' | ');
-};
+    const last30dLabel = (typeof t === 'function') ? t('stats.return.last_30d') : 'last 30d';
+    if (typeof last30d === 'number' && Number.isFinite(last30d)) {
+        subEl.textContent = `~${last30d.toFixed(1)}% ${last30dLabel}`;
+    } else {
+        subEl.textContent = (typeof t === 'function')
+            ? t('stats.return.unavailable')
+            : 'Portfolio history unavailable';
+    }
+}
+
+window.updateAvgMonthlyCard = updateAvgMonthlyCard;
 
 function updateAPRDisplay(aprPercentage, vaultName) {
     // Update APR display if element exists
@@ -370,129 +458,14 @@ function updateAPRDisplay(aprPercentage, vaultName) {
     }
 }
 
-function updateInvestmentCalculator() {
-    // Fixed investment amount of $1000
-    const investmentAmount = 1000;
-    
-    // Use trading return stored from updateTradingStats
-    const totalReturnPct = window.tradingReturnPct || 0;
-    const totalDaysActive = window.daysActive || 70;
-    
-    if (totalReturnPct === 0) {
-        return;
-    }
-    
-    // Calculate daily return rate
-    const dailyReturnPct = totalReturnPct / totalDaysActive;
-    
-    // Calculate return for the full period (since inception)
-    const periodReturnPct = totalReturnPct;
-    const periodProfit = investmentAmount * (periodReturnPct / 100);
-    const totalValue = investmentAmount + periodProfit;
-    
-    // Calculate APY based on current performance
-    const annualizedReturnPct = dailyReturnPct * 365;
-    
-    // Update days ago label (uses i18n if available)
-    const daysAgoLabel = document.getElementById('days-ago-label');
-    if (daysAgoLabel) {
-        if (typeof t === 'function') {
-            daysAgoLabel.textContent = `${t('calc.since')} (${totalDaysActive} ${t('calc.days_ago')})`;
-        } else {
-            daysAgoLabel.textContent = `Since vault inception on October 1st 2025 (${totalDaysActive} days ago)`;
-        }
-    }
-    
-    // Update main result display (profit only)
-    const profitDisplay = document.getElementById('profit-display');
-    const profitPctDisplay = document.getElementById('profit-pct-display');
-    
-    if (profitDisplay) {
-        const sign = periodProfit >= 0 ? '+' : '';
-        profitDisplay.textContent = `${sign}$${periodProfit.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-        profitDisplay.style.color = periodProfit >= 0 ? 'var(--accent)' : '#f87171';
-    }
-    
-    if (profitPctDisplay) {
-        const sign = periodReturnPct >= 0 ? '+' : '';
-        profitPctDisplay.textContent = `(${sign}${periodReturnPct.toFixed(2)}% return)`;
-    }
-
-    const monthlyReturnPct = dailyReturnPct * 30;
-    
-    // Calculate comparison returns for table
-    const bankAPY = 0.04; // 4% annual
-    const sp500APY = 0.10; // 10% annual
-    
-    // Calculate profits for each time period
-    // Bank: 4% APY
-    const bank1m = investmentAmount * (bankAPY / 12);
-    const bank6m = investmentAmount * (bankAPY / 2);
-    const bank1y = investmentAmount * bankAPY;
-    
-    // S&P 500: 10% APY
-    const sp5001m = investmentAmount * (sp500APY / 12);
-    const sp5006m = investmentAmount * (sp500APY / 2);
-    const sp5001y = investmentAmount * sp500APY;
-    
-    // Vice Algos: based on actual monthly rate
-    const vice1m = investmentAmount * (monthlyReturnPct / 100);
-    const vice6m = investmentAmount * ((monthlyReturnPct * 6) / 100);
-    const vice1y = investmentAmount * ((monthlyReturnPct * 12) / 100);
-    
-    // Helper function to format currency
-    const formatProfit = (val) => `+$${val.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-    
-    // Update table cells - Bank (grey)
-    const bank1mEl = document.getElementById('bank-1m');
-    const bank6mEl = document.getElementById('bank-6m');
-    const bank1yEl = document.getElementById('bank-1y');
-    if (bank1mEl) bank1mEl.textContent = formatProfit(bank1m);
-    if (bank6mEl) bank6mEl.textContent = formatProfit(bank6m);
-    if (bank1yEl) bank1yEl.textContent = formatProfit(bank1y);
-    
-    // Update table cells - S&P 500 (yellow)
-    const sp5001mEl = document.getElementById('sp500-1m');
-    const sp5006mEl = document.getElementById('sp500-6m');
-    const sp5001yEl = document.getElementById('sp500-1y');
-    if (sp5001mEl) sp5001mEl.textContent = formatProfit(sp5001m);
-    if (sp5006mEl) sp5006mEl.textContent = formatProfit(sp5006m);
-    if (sp5001yEl) sp5001yEl.textContent = formatProfit(sp5001y);
-    
-    // Update table cells - Vice Algos (green)
-    const vice1mEl = document.getElementById('vice-1m');
-    const vice6mEl = document.getElementById('vice-6m');
-    const vice1yEl = document.getElementById('vice-1y');
-    if (vice1mEl) vice1mEl.textContent = formatProfit(vice1m);
-    if (vice6mEl) vice6mEl.textContent = formatProfit(vice6m);
-    if (vice1yEl) vice1yEl.textContent = formatProfit(vice1y);
-}
-
 function displayError(message) {
     const aprElement = document.getElementById('vault-apr');
     if (aprElement) {
         aprElement.innerHTML = `<span style="color: var(--error);">${message}</span>`;
     }
-    
-    const calculatorElement = document.getElementById('investment-calculator');
-    if (calculatorElement) {
-        calculatorElement.innerHTML = `<p style="color: var(--error);">${message}</p>`;
-    }
-    
-    const aprNote = document.getElementById('apr-note');
-    if (aprNote) {
-        aprNote.innerHTML = message;
-    }
-}
-
-// Set up interactive calculator (simplified - no sliders)
-function setupCalculator() {
-    // Calculator now uses fixed $1000 and full period since inception
-    // No interactive elements needed
 }
 
 // Initialize everything when page loads
 document.addEventListener('DOMContentLoaded', function() {
-    setupCalculator();
     fetchVaultAPR();
 });
