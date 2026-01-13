@@ -251,9 +251,7 @@ function updateTradingStats(data) {
     const seriesAllTime = getPortfolioSeries(data, 'allTime');
     const seriesSinceDeposit = trimSeriesToFirstPositiveCapital(seriesAllTime);
     const tradingReturnFromPortfolio = computeFlowAdjustedTwrPct(seriesSinceDeposit);
-    const tradingReturn = tradingReturnFromPortfolio === null
-        ? getLegacyFollowerReturnPct(data)
-        : tradingReturnFromPortfolio;
+    const tradingReturn = tradingReturnFromPortfolio;
 
     const seriesMonth = getPortfolioSeries(data, 'month');
     const monthReturnFromPortfolio = computeFlowAdjustedTwrPct(seriesMonth);
@@ -262,20 +260,42 @@ function updateTradingStats(data) {
     const now = new Date();
     const daysActive = Math.floor((now - VAULT_START_DATE) / (1000 * 60 * 60 * 24));
     
-    console.log(`Trading Stats: Return = ${tradingReturn.toFixed(2)}%, Days = ${daysActive}`);
+    if (typeof tradingReturn === 'number' && Number.isFinite(tradingReturn)) {
+        console.log(`Trading Stats: Return = ${tradingReturn.toFixed(2)}%, Days = ${daysActive}`);
+    } else {
+        console.log(`Trading Stats: Return unavailable (missing portfolio history), Days = ${daysActive}`);
+    }
     
     // Store globally for investment calculator
-    window.tradingReturnPct = tradingReturn;
+    window.tradingReturnPct = typeof tradingReturn === 'number' && Number.isFinite(tradingReturn)
+        ? tradingReturn
+        : null;
     window.daysActive = daysActive;
     window.monthReturnPctLast30d = monthReturnFromPortfolio;
-    window.avgMonthlyReturnPct = daysActive > 0 ? (tradingReturn / daysActive) * 30 : null;
+    window.avgMonthlyReturnPct = daysActive > 0
+        && typeof tradingReturn === 'number'
+        && Number.isFinite(tradingReturn)
+        ? (tradingReturn / daysActive) * 30
+        : null;
     
     // Update trading return display
     const totalReturnElement = document.getElementById('total-return');
     if (totalReturnElement) {
-        const sign = tradingReturn >= 0 ? '+' : '';
-        totalReturnElement.innerHTML = `${sign}${tradingReturn.toFixed(2)}%`;
-        totalReturnElement.style.color = tradingReturn >= 0 ? 'var(--accent)' : '#ff6b6b';
+        if (typeof tradingReturn === 'number' && Number.isFinite(tradingReturn)) {
+            const sign = tradingReturn >= 0 ? '+' : '';
+            totalReturnElement.innerHTML = `${sign}${tradingReturn.toFixed(2)}%`;
+            totalReturnElement.style.color = tradingReturn >= 0 ? 'var(--accent)' : '#ff6b6b';
+        } else {
+            totalReturnElement.innerHTML = 'N/A';
+            totalReturnElement.style.color = 'var(--text-secondary)';
+
+            const subtitleEl = document.getElementById('trading-return-subtitle');
+            if (subtitleEl) {
+                subtitleEl.textContent = (typeof t === 'function')
+                    ? t('stats.return.unavailable')
+                    : 'Portfolio history unavailable';
+            }
+        }
     }
 
     if (typeof window.updateTradingReturnSubtitle === 'function') {
