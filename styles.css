@@ -61,13 +61,20 @@ header {
 }
 
 .site-logo {
-    width: min(30vw, 360px);
-    height: clamp(56px, 7vw, 96px);
+    width: min(34vw, 460px);
+    height: clamp(64px, 8vw, 120px);
     display: block;
     margin-bottom: 0.35rem;
     background: var(--accent);
     -webkit-mask: url('Vice_Logo.svg') no-repeat center / contain;
             mask: url('Vice_Logo.svg') no-repeat center / contain;
+}
+
+@media (max-width: 640px) {
+    .site-logo {
+        width: min(72vw, 420px);
+        height: clamp(72px, 18vw, 140px);
+    }
 }
 
 .lang-toggle {
