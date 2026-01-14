@@ -103,16 +103,16 @@ const translations = {
         "cta.join": "REJOIGNEZ LE COPY TRADING SUR HYPERLIQUID",
 
         // Hero
-        "hero.tagline": "Trading algorithmique sur HyperLiquid, performance transparente, copy-trade via vault.",
+        "hero.tagline": "Trading algorithmique, performance transparente, copiez les trades via un coffre-fort numérique.",
 
         // Verified
         "verified.link": "Vérifiez l'historique des trades sur HyperLiquid en cliquant ici →",
 
         // How it works
         "how.title": "Comment ça marche?",
-        "how.step1.title": "1) Déposez vos USDC dans le vault Hyperliquid",
-        "how.step1.link": "Ouvrir le vault HyperLiquid",
-        "how.step2.title": "2) La stratégie trade automatiquement",
+        "how.step1.title": "1) Déposez vos USDC dans le coffre-fort numérique",
+        "how.step1.link": "Ouvrir le coffre-fort numérique sur HyperLiquid",
+        "how.step2.title": "2) Déploiement actif de votre capital",
         "how.step2.text": "Les trades sont exécutés systématiquement vous n'avez rien à faire.",
         "how.step3.title": "3) Retirez à tout moment",
         "how.step3.text": "Vous pouvez retirer vos fonds quand vous le souhaitez.",
