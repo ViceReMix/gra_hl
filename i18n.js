@@ -134,7 +134,7 @@ const translations = {
         "alpha.excess_help": "Positif = vous faites mieux que le BTC.",
         
         // Footer
-        "footer": "© Vice Algos are made with Love. All rights reserved."
+        "footer": "© Vice Algos are made with Love. All Rights reserved."
     }
 };
 
