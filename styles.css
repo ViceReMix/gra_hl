@@ -43,6 +43,7 @@ header {
     align-items: center;
     padding: 1rem;
     flex-wrap: wrap;
+    position: relative;
 }
 
 .site-header__row {
@@ -53,11 +54,20 @@ header {
     flex-wrap: wrap;
 }
 
+.site-logo-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .site-logo {
-    height: clamp(64px, 10vw, 96px);
-    width: auto;
+    width: min(30vw, 360px);
+    height: clamp(56px, 7vw, 96px);
     display: block;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.35rem;
+    background: var(--accent);
+    -webkit-mask: url('Vice_Logo.svg') no-repeat center / contain;
+            mask: url('Vice_Logo.svg') no-repeat center / contain;
 }
 
 .lang-toggle {
@@ -69,6 +79,17 @@ header {
     cursor: pointer;
     font-size: 0.8em;
     transition: all 0.3s ease;
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+}
+
+@media (max-width: 640px) {
+    .lang-toggle {
+        position: static;
+        top: auto;
+        right: auto;
+    }
 }
 
  .lang-toggle:hover {
