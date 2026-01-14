@@ -398,79 +398,10 @@ header {
     margin-bottom: 0.75rem;
 }
 
-/* Top navigation (reusable) */
-.top-nav {
-    position: relative; /* not sticky */
-    z-index: 10;
-    background: linear-gradient(180deg, rgba(31,35,44,0.98) 0%, rgba(31,35,44,0.92) 100%);
-    border-bottom: 1px solid var(--border-color);
-}
-
-.top-nav__inner {
-    max-width: 1200px; /* centered content with breathing room on both sides */
-    margin: 0 auto;
-    /* Keep slight left shift */
-    padding: 0.5rem 1.25rem 0.5rem 0.75rem; /* top right bottom left */
-    display: flex;
-    flex-direction: column; /* stack logo above menu */
-    align-items: center;
-    justify-content: center;
-    gap: 0.4rem;
-}
-
-.top-nav__left { display: flex; align-items: center; gap: 0.75rem; }
-
-.top-nav__logo { height: 28px; width: auto; display: block; }
-.top-nav__logo-link { display: inline-flex; align-items: center; }
-/* Accent-colored SVG via mask; bigger (2x) */
-.top-nav__logo-mask {
-  display: inline-block;
-  /* Fluid size: stays within these bounds and scales with viewport */
-  height: clamp(64px, 10.35vw, 96px); /* ~+15% */
-  width: clamp(230px, 41.4vw, 345px);  /* ~+15% */
-  background-color: var(--accent);
-  -webkit-mask: url('Vice_Logo.svg') no-repeat center / contain;
-          mask: url('Vice_Logo.svg') no-repeat center / contain;
-}
-.top-nav__wordmark { display: none; }
-
-.top-nav__center { position: static; left: auto; top: auto; transform: none; display: flex; justify-content: center; width: 100%; }
-
-/* Skewed menu inspired by CodePen (variables converted to CSS custom properties) */
-.skew-menu { text-align: center; }
-.skew-menu ul { display: inline-block; margin: 0; padding: 0; list-style: none; transform: skew(calc(-1 * var(--skew-angle))); }
-.skew-menu ul li { background: #fff; float: left; border-right: 1px solid #eee; box-shadow: 0 1px 1px rgba(0,0,0,0.1); text-transform: uppercase; color: #555; font-weight: 700; transition: all 0.3s linear; }
-.skew-menu ul li:first-child { border-radius: var(--menu-radius) 0 0 var(--menu-radius); }
-.skew-menu ul li:last-child { border-right: none; border-radius: 0 var(--menu-radius) var(--menu-radius) 0; }
-.skew-menu ul li:hover { background: #eee; color: var(--accent); }
-.skew-menu ul li a { display: block; padding: 0.6rem 1.2rem; color: inherit; text-decoration: none; transform: skew(var(--skew-angle)); }
-
-/* Skewed menu colors: accent background, component-bg text; on hover keep accent bg and turn text primary */
-.top-nav .skew-menu ul li { background: var(--accent); color: var(--component-bg); border-right: 1px solid rgba(0,0,0,0.0); box-shadow: none; }
-.top-nav .skew-menu ul li:hover { background: var(--accent); color: var(--text-primary); }
-.top-nav .skew-menu ul li a { padding: 0.55rem 1rem; }
-
-/* Responsive: simplify skew on tablets and smaller */
-@media (max-width: 1024px) {
-  .top-nav__inner { flex-wrap: wrap; gap: 0.5rem; }
-  /* Place menu below logo in normal flow to avoid overlap */
-  .top-nav__center { order: 2; width: 100%; position: static; transform: none; left: auto; top: auto; margin-top: 0.25rem; }
-  /* De-skew and wrap buttons nicely */
-  .skew-menu ul { transform: none; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.25rem; }
-  .skew-menu ul li { border-radius: 8px; margin: 0.25rem; border-right: none; }
-  .skew-menu ul li a { transform: none; padding: 0.45rem 0.8rem; font-size: 0.95rem; }
-}
-
-/* When nav is present, we can hide the old page title, but keep last-updated */
-body .top-nav ~ header h1 { display: none; }
-
-/* Remove extra spacer below nav */
-.top-nav + header { padding-top: 0; }
-
 main {
     width: 98%;
     max-width: none;
-    margin: 0.5rem auto; /* tighter top spacing */
+    margin: 0 auto; /* tighter top spacing */
     padding: 0;
 }
 
