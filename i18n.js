@@ -67,17 +67,12 @@ const translations = {
         "alpha.vault_return": "Vice vault return",
         "alpha.vault_return_help": "The strategy performance since start.",
         "alpha.excess": "Alpha (excess return)",
-        "alpha.excess_help": "Positive means you outperformed BTC.",
+        "alpha.excess_help": "Positive means it outperformed BTC.",
         
         // Footer
         "footer": "© Vice Algos are made with Love. All rights reserved."
     },
     fr: {
-        // Header
-        "nav.dashboard": "TABLEAU DE BORD",
-        "nav.research": "RECHERCHE",
-        "nav.copytrading": "COPY TRADING", 
-        "nav.contact": "CONTACT",
         
         // Stat cards
         "stats.apr": "TAUX DE RENDEMENT ANNUEL",
@@ -110,7 +105,7 @@ const translations = {
 
         // How it works
         "how.title": "Comment ça marche?",
-        "how.step1.title": "1) Déposez vos USDC dans le coffre-fort numérique",
+        "how.step1.title": "1) Déposez vos fonds dans le coffre-fort numérique",
         "how.step1.link": "Ouvrir le coffre-fort numérique sur HyperLiquid",
         "how.step2.title": "2) Déploiement actif de votre capital",
         "how.step2.text": "Les trades sont exécutés systématiquement vous n'avez rien à faire.",
@@ -122,16 +117,16 @@ const translations = {
         "risk.text": "Les performances passées ne garantissent pas les résultats futurs.",
 
         // Alpha
-        "alpha.title": "Alpha vs Bitcoin (BTC)",
-        "alpha.subtitle": "Comparaison de rendements depuis le 1er Oct 2025 : rendement du vault moins rendement du BTC.",
+        "alpha.title": "Vice Algos vs Bitcoin",
+        "alpha.subtitle": "Comparaison de rendements depuis le 1er Oct 2025.",
         "alpha.btc_now": "Prix du BTC maintenant",
         "alpha.btc_start": "Prix de départ : 114 000 $ (1er Oct)",
         "alpha.btc_return": "Rendement BTC",
-        "alpha.btc_return_help": "Variation du BTC depuis le départ.",
-        "alpha.vault_return": "Rendement du vault",
-        "alpha.vault_return_help": "Performance de la stratégie depuis le départ.",
+        "alpha.btc_return_help": "Performance du BTC depuis le départ.",
+        "alpha.vault_return": "Rendement Vice Algos",
+        "alpha.vault_return_help": "Performance des algorithmes depuis le départ.",
         "alpha.excess": "Alpha (surperformance)",
-        "alpha.excess_help": "Positif = vous faites mieux que le BTC.",
+        "alpha.excess_help": "Positif = les algorithmes font mieux que BTC.",
         
         // Footer
         "footer": "© Vice Algos are made with Love. All Rights reserved."
