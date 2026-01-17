@@ -17,6 +17,7 @@ const translations = {
         "stats.return": "TRADING RETURN",
         "stats.return.note": "Pure PnL / Initial Capital",
         "stats.return.last_30d": "last 30d",
+        "stats.return.mtd": "month-to-date",
         "stats.return.avg_mo": "avg/mo",
         "stats.return.unavailable": "Portfolio history unavailable",
         "stats.days": "DAYS ACTIVE",
@@ -57,18 +58,10 @@ const translations = {
         "risk.title": "Risk & assumptions",
         "risk.text": "Not financial advice. Past performance does not guarantee future results. This is crypto and copy trading — drawdowns can be significant.",
 
-        // Alpha
-        "alpha.title": "Alpha vs Bitcoin (BTC)",
-        "alpha.subtitle": "Simple comparison since Oct 1, 2025: vault return minus BTC return.",
-        "alpha.btc_now": "BTC price now",
-        "alpha.btc_start": "Start price: $114,000 (Oct 1)",
-        "alpha.btc_return": "BTC return",
-        "alpha.btc_return_help": "How much BTC moved since start.",
-        "alpha.vault_return": "Vice vault return",
-        "alpha.vault_return_help": "The strategy performance since start.",
-        "alpha.excess": "Alpha (excess return)",
-        "alpha.excess_help": "Positive means it outperformed BTC.",
-        
+        // Monthly grid
+        "monthly.grid.title": "Monthly Performance Grid",
+        "monthly.grid.tooltip": "Calculated with Flow-adjusted TWR to isolate trading performance by neutralizing deposits and withdrawals.",
+
         // Footer
         "footer": "© Vice Algos are made with Love. All rights reserved."
     },
@@ -84,6 +77,7 @@ const translations = {
         "stats.return": "RENDEMENT TRADING",
         "stats.return.note": "PnL Pur / Capital Initial",
         "stats.return.last_30d": "30 derniers jours",
+        "stats.return.mtd": "depuis le début du mois",
         "stats.return.avg_mo": "moyenne/mois",
         "stats.return.unavailable": "Historique du portefeuille indisponible",
         "stats.days": "JOURS ACTIFS",
@@ -116,18 +110,10 @@ const translations = {
         "risk.title": "Attention aux Risques Financiers",
         "risk.text": "Les performances passées ne garantissent pas les résultats futurs.",
 
-        // Alpha
-        "alpha.title": "Vice Algos vs Bitcoin",
-        "alpha.subtitle": "Comparaison de rendements depuis le 1er Oct 2025.",
-        "alpha.btc_now": "Prix du BTC maintenant",
-        "alpha.btc_start": "Prix de départ : 114 000 $ (1er Oct)",
-        "alpha.btc_return": "Rendement BTC",
-        "alpha.btc_return_help": "Performance du BTC depuis le départ.",
-        "alpha.vault_return": "Rendement Vice Algos",
-        "alpha.vault_return_help": "Performance des algorithmes depuis le départ.",
-        "alpha.excess": "Alpha (surperformance)",
-        "alpha.excess_help": "Positif = les algorithmes font mieux que BTC.",
-        
+        // Monthly grid
+        "monthly.grid.title": "Grille de performance mensuelle",
+        "monthly.grid.tooltip": "Calculé avec TWR ajustée pour neutraliser les dépôts et retraits et isoler la performance de trading.",
+
         // Footer
         "footer": "© Vice Algos are made with Love. All Rights reserved."
     }
@@ -158,6 +144,14 @@ function updatePageLanguage() {
         const key = el.getAttribute('data-i18n');
         el.textContent = t(key);
     });
+
+    // Update tooltip text for data-i18n-tooltip elements
+    document.querySelectorAll('[data-i18n-tooltip]').forEach(el => {
+        const key = el.getAttribute('data-i18n-tooltip');
+        const value = t(key);
+        el.setAttribute('data-tooltip', value);
+        el.setAttribute('aria-label', value);
+    });
     
     // Update language toggle button
     const langToggle = document.getElementById('lang-toggle');
@@ -183,9 +177,6 @@ function toggleLanguage() {
         window.updateAvgMonthlyCard();
     }
 
-    if (typeof window.updateAlphaSection === 'function') {
-        window.updateAlphaSection();
-    }
 }
 
 // Initialize language on page load
