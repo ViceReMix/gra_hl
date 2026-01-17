@@ -419,8 +419,6 @@ function updateTradingStats(data) {
         window.updateTradingReturnSubtitle();
     }
 
-    updateAvgMonthlyCard();
-
     const monthlyRows = computeMonthlyTwrRows(seriesAllTime);
     renderMonthlyGrid(monthlyRows);
 
@@ -435,6 +433,8 @@ function updateTradingStats(data) {
             window.monthReturnPctMtd = currentRow.value;
         }
     }
+
+    updateAvgMonthlyCard();
     
     // Update days active
     const daysActiveElement = document.getElementById('days-active');
