@@ -104,6 +104,47 @@
 
             <div class="section-separator" aria-hidden="true"></div>
 
+            <section class="monthly-grid">
+                <div class="monthly-grid__header">
+                    <h3 class="monthly-grid__title">
+                        <span data-i18n="monthly.grid.title">Monthly Performance Grid</span>
+                        <span
+                            class="monthly-grid__tooltip"
+                            aria-label="Flow-adjusted TWR isolates trading performance by neutralizing deposits and withdrawals."
+                            data-tooltip="Flow-adjusted TWR isolates trading performance by neutralizing deposits and withdrawals."
+                            data-i18n-tooltip="monthly.grid.tooltip"
+                        >?</span>
+                    </h3>
+                </div>
+                <div class="monthly-grid__table-wrap">
+                    <table class="monthly-grid__table" aria-label="Monthly performance grid">
+                        <thead>
+                            <tr>
+                                <th scope="col">Year</th>
+                                <th scope="col">Jan</th>
+                                <th scope="col">Feb</th>
+                                <th scope="col">Mar</th>
+                                <th scope="col">Apr</th>
+                                <th scope="col">May</th>
+                                <th scope="col">Jun</th>
+                                <th scope="col">Jul</th>
+                                <th scope="col">Aug</th>
+                                <th scope="col">Sep</th>
+                                <th scope="col">Oct</th>
+                                <th scope="col">Nov</th>
+                                <th scope="col">Dec</th>
+                                <th scope="col">Year Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="monthly-grid-body">
+                            <tr>
+                                <td colspan="14">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
             <section class="how-it-works">
                 <h3 class="how-it-works__title" data-i18n="how.title">How it works</h3>
                 <div class="how-it-works__steps">
@@ -120,35 +161,6 @@
                     <div class="how-it-works__step">
                         <div class="how-it-works__step-title" data-i18n="how.step3.title">3) Withdraw anytime</div>
                         <div class="how-it-works__step-text" data-i18n="how.step3.text">You can withdraw your funds whenever you want.</div>
-                    </div>
-                </div>
-            </section>
-
-            <div class="section-separator" aria-hidden="true"></div>
-
-            <section class="alpha-section" aria-label="Alpha vs BTC">
-                <h3 class="alpha-section__title" data-i18n="alpha.title">Alpha vs Bitcoin (BTC)</h3>
-                <div class="alpha-section__subtitle" data-i18n="alpha.subtitle">Simple comparison since Oct 1, 2025: vault return minus BTC return.</div>
-                <div class="alpha-grid">
-                    <div class="alpha-card">
-                        <div class="alpha-card__label" data-i18n="alpha.btc_now">BTC price now</div>
-                        <div class="alpha-card__value" id="btc-price-now">Loading...</div>
-                        <div class="alpha-card__subtext" data-i18n="alpha.btc_start">Start price: $114,000 (Oct 1)</div>
-                    </div>
-                    <div class="alpha-card">
-                        <div class="alpha-card__label" data-i18n="alpha.btc_return">BTC return</div>
-                        <div class="alpha-card__value" id="btc-return">Loading...</div>
-                        <div class="alpha-card__subtext" data-i18n="alpha.btc_return_help">How much BTC moved since start.</div>
-                    </div>
-                    <div class="alpha-card">
-                        <div class="alpha-card__label" data-i18n="alpha.vault_return">Vice vault return</div>
-                        <div class="alpha-card__value" id="vault-return">Loading...</div>
-                        <div class="alpha-card__subtext" data-i18n="alpha.vault_return_help">Vault returns since Oct 1, 2025.</div>
-                    </div>
-                    <div class="alpha-card alpha-card--highlight">
-                        <div class="alpha-card__label" data-i18n="alpha.excess">Alpha (excess return)</div>
-                        <div class="alpha-card__value" id="alpha-excess">Loading...</div>
-                        <div class="alpha-card__subtext" data-i18n="alpha.excess_help">Positive means you outperformed BTC.</div>
                     </div>
                 </div>
             </section>
