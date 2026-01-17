@@ -61,6 +61,7 @@ const translations = {
         // Monthly grid
         "monthly.grid.title": "Monthly Performance Grid",
         "monthly.grid.tooltip": "Calculated with Flow-adjusted TWR to isolate trading performance by neutralizing deposits and withdrawals.",
+        "monthly.grid.year_total": "Year Total",
 
         // Footer
         "footer": "© Vice Algos are made with Love. All rights reserved."
@@ -113,6 +114,7 @@ const translations = {
         // Monthly grid
         "monthly.grid.title": "Grille de performance mensuelle",
         "monthly.grid.tooltip": "Calculé avec TWR ajustée pour neutraliser les dépôts et retraits et isoler la performance de trading.",
+        "monthly.grid.year_total": "Total annuel",
 
         // Footer
         "footer": "© Vice Algos are made with Love. All Rights reserved."
