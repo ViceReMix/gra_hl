@@ -5,64 +5,11 @@ let vaultData = null;
 // Vault start date
 const VAULT_START_DATE = new Date('2025-10-01');
 
-// BTC reference price for the alpha comparison
-const BTC_START_PRICE_USD = 114000;
-
-async function fetchBtcPriceNow() {
-    const resp = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT', {
-        method: 'GET'
-    });
-    if (!resp.ok) {
-        throw new Error(`Binance HTTP error! status: ${resp.status}`);
-    }
-    const data = await resp.json();
-    const price = Number(data && data.price);
-    if (!Number.isFinite(price)) {
-        throw new Error('Invalid BTC price response');
-    }
-    return price;
-}
-
-function fmtUsd(v) {
-    if (!Number.isFinite(v)) return 'N/A';
-    return `$${v.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
-}
-
 function fmtPct(v) {
     if (!Number.isFinite(v)) return 'N/A';
     const sign = v >= 0 ? '+' : '';
     return `${sign}${v.toFixed(2)}%`;
 }
-
-async function updateAlphaSection() {
-    const elBtcNow = document.getElementById('btc-price-now');
-    const elBtcRet = document.getElementById('btc-return');
-    const elVaultRet = document.getElementById('vault-return');
-    const elAlpha = document.getElementById('alpha-excess');
-    if (!elBtcNow || !elBtcRet || !elVaultRet || !elAlpha) return;
-
-    const vaultRet = window.tradingReturnPct;
-    elVaultRet.textContent = (typeof vaultRet === 'number' && Number.isFinite(vaultRet)) ? fmtPct(vaultRet) : 'N/A';
-
-    try {
-        const btcNow = await fetchBtcPriceNow();
-        const btcRet = ((btcNow / BTC_START_PRICE_USD) - 1) * 100;
-        const alpha = (typeof vaultRet === 'number' && Number.isFinite(vaultRet)) ? (vaultRet - btcRet) : NaN;
-
-        elBtcNow.textContent = fmtUsd(btcNow);
-        elBtcRet.textContent = fmtPct(btcRet);
-        elAlpha.textContent = fmtPct(alpha);
-        elAlpha.style.color = Number.isFinite(alpha) && alpha >= 0 ? '' : '#ff6b6b';
-    } catch (e) {
-        console.error('Error updating BTC alpha section:', e);
-        elBtcNow.textContent = 'N/A';
-        elBtcRet.textContent = 'N/A';
-        elAlpha.textContent = 'N/A';
-        elAlpha.style.color = 'var(--text-secondary)';
-    }
-}
-
-window.updateAlphaSection = updateAlphaSection;
 
 async function fetchVaultAPR() {
     const vaultAddress = "0xccc01fa89e4163aaaa231d3d0a2943cc613bf2ea";
@@ -302,6 +249,104 @@ function updateTradingStats(data) {
         return (growth - 1) * 100;
     };
 
+    const filterSeriesToRange = (series, startMs, endMs) => {
+        if (!series) return null;
+        const accountValue = series.accountValue.filter((p) => p.ts >= startMs && p.ts < endMs);
+        const pnl = Array.isArray(series.pnl)
+            ? series.pnl.filter((p) => p.ts >= startMs && p.ts < endMs)
+            : null;
+        return { accountValue, pnl };
+    };
+
+    const computeMonthlyTwrRows = (series) => {
+        if (!series || !Array.isArray(series.accountValue) || series.accountValue.length < 2) return [];
+        const firstTs = series.accountValue[0].ts;
+        const lastTs = series.accountValue[series.accountValue.length - 1].ts;
+        const firstDate = new Date(firstTs);
+        const lastDate = new Date(lastTs);
+        let cursor = new Date(Date.UTC(firstDate.getUTCFullYear(), firstDate.getUTCMonth(), 1));
+        const rows = [];
+
+        while (cursor <= lastDate) {
+            const next = new Date(Date.UTC(cursor.getUTCFullYear(), cursor.getUTCMonth() + 1, 1));
+            const startMs = cursor.getTime();
+            const endMs = next.getTime();
+            const window = filterSeriesToRange(series, startMs, endMs);
+            let value = null;
+
+            if (window && window.accountValue.length >= 2) {
+                const trimmed = trimSeriesToFirstPositiveCapital(window);
+                value = computeFlowAdjustedTwrPct(trimmed);
+            }
+
+            rows.push({
+                year: cursor.getUTCFullYear(),
+                month: cursor.getUTCMonth(),
+                value
+            });
+
+            cursor = next;
+        }
+
+        return rows;
+    };
+
+    const renderMonthlyGrid = (rows) => {
+        const tbody = document.getElementById('monthly-grid-body');
+        if (!tbody) return;
+
+        if (!rows.length) {
+            tbody.innerHTML = '<tr><td colspan="14">N/A</td></tr>';
+            return;
+        }
+
+        const years = {};
+        rows.forEach((row) => {
+            if (!years[row.year]) {
+                years[row.year] = new Array(12).fill(null);
+            }
+            years[row.year][row.month] = row.value;
+        });
+
+        const yearKeys = Object.keys(years)
+            .map((y) => Number(y))
+            .sort((a, b) => a - b);
+
+        tbody.innerHTML = '';
+        yearKeys.forEach((year) => {
+            const tr = document.createElement('tr');
+            const yearCell = document.createElement('td');
+            yearCell.textContent = year;
+            tr.appendChild(yearCell);
+
+            let growth = 1;
+            let hasMonth = false;
+
+            years[year].forEach((value) => {
+                const td = document.createElement('td');
+                if (typeof value === 'number' && Number.isFinite(value)) {
+                    td.textContent = fmtPct(value);
+                    td.classList.add(value >= 0 ? 'monthly-grid__cell--pos' : 'monthly-grid__cell--neg');
+                    growth *= (1 + value / 100);
+                    hasMonth = true;
+                } else {
+                    td.textContent = '—';
+                }
+                tr.appendChild(td);
+            });
+
+            const yearTotal = hasMonth ? (growth - 1) * 100 : null;
+            const totalTd = document.createElement('td');
+            totalTd.textContent = fmtPct(yearTotal);
+            if (typeof yearTotal === 'number' && Number.isFinite(yearTotal)) {
+                totalTd.classList.add(yearTotal >= 0 ? 'monthly-grid__cell--pos' : 'monthly-grid__cell--neg');
+            }
+            tr.appendChild(totalTd);
+
+            tbody.appendChild(tr);
+        });
+    };
+
     const seriesAllTime = getPortfolioSeries(data, 'allTime');
     const seriesSinceDeposit = trimSeriesToFirstPositiveCapital(seriesAllTime);
     const tradingReturnFromPortfolio = computeFlowAdjustedTwrPct(seriesSinceDeposit);
@@ -326,6 +371,7 @@ function updateTradingStats(data) {
         : null;
     window.daysActive = daysActive;
     window.monthReturnPctLast30d = monthReturnFromPortfolio;
+    window.monthReturnPctMtd = null;
     window.avgMonthlyReturnPct = daysActive > 0
         && typeof tradingReturn === 'number'
         && Number.isFinite(tradingReturn)
@@ -375,7 +421,20 @@ function updateTradingStats(data) {
 
     updateAvgMonthlyCard();
 
-    updateAlphaSection();
+    const monthlyRows = computeMonthlyTwrRows(seriesAllTime);
+    renderMonthlyGrid(monthlyRows);
+
+    if (monthlyRows.length) {
+        const nowUtc = new Date();
+        const currentYear = nowUtc.getUTCFullYear();
+        const currentMonth = nowUtc.getUTCMonth();
+        const currentRow = monthlyRows.find(
+            (row) => row.year === currentYear && row.month === currentMonth
+        );
+        if (currentRow && typeof currentRow.value === 'number' && Number.isFinite(currentRow.value)) {
+            window.monthReturnPctMtd = currentRow.value;
+        }
+    }
     
     // Update days active
     const daysActiveElement = document.getElementById('days-active');
@@ -410,7 +469,7 @@ function updateAvgMonthlyCard() {
     if (!avgEl || !subEl) return;
 
     const avgMo = window.avgMonthlyReturnPct;
-    const last30d = window.monthReturnPctLast30d;
+    const mtdReturn = window.monthReturnPctMtd;
 
     if (typeof avgMo === 'number' && Number.isFinite(avgMo)) {
         const sign = avgMo >= 0 ? '+' : '';
@@ -421,9 +480,9 @@ function updateAvgMonthlyCard() {
         avgEl.style.color = 'var(--text-secondary)';
     }
 
-    const last30dLabel = (typeof t === 'function') ? t('stats.return.last_30d') : 'last 30d';
-    if (typeof last30d === 'number' && Number.isFinite(last30d)) {
-        subEl.textContent = `~${last30d.toFixed(1)}% ${last30dLabel}`;
+    const mtdLabel = (typeof t === 'function') ? t('stats.return.mtd') : 'month-to-date';
+    if (typeof mtdReturn === 'number' && Number.isFinite(mtdReturn)) {
+        subEl.textContent = `~${mtdReturn.toFixed(1)}% ${mtdLabel}`;
     } else {
         subEl.textContent = (typeof t === 'function')
             ? t('stats.return.unavailable')
