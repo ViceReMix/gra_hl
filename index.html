@@ -22,21 +22,34 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="styles.css">
-    <script src="i18n.js" defer></script>
-    <script src="vault-apr.js" defer></script>
+    <!-- MAINTENANCE MODE: scripts disabled -->
+    <!-- <script src="i18n.js" defer></script> -->
+    <!-- <script src="vault-apr.js" defer></script> -->
 </head>
 <body>
     <header class="site-header">
         <a class="site-logo-link" href="index.html" aria-label="Vice Algos">
             <span class="site-logo" aria-hidden="true"></span>
         </a>
-        <div class="site-header__row">
+        <!-- MAINTENANCE MODE: lang toggle hidden -->
+        <!-- <div class="site-header__row">
             <button id="lang-toggle" class="lang-toggle" onclick="toggleLanguage()">
                 🇫🇷 FR
             </button>
-        </div>
+        </div> -->
     </header>
     
+    <!-- MAINTENANCE MODE BANNER -->
+    <main style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:70vh; gap:2rem;">
+        <div style="text-align:center; max-width:480px; padding:2rem;">
+            <div style="font-family:'Roboto Mono',monospace; font-size:0.85rem; letter-spacing:0.18em; color:var(--accent); text-transform:uppercase; margin-bottom:0.75rem;">System Status</div>
+            <div style="font-family:'Roboto Mono',monospace; font-size:1.55rem; font-weight:700; color:var(--text-primary); margin-bottom:1rem;">Under Maintenance</div>
+            <div style="font-family:'Roboto Mono',monospace; font-size:0.82rem; color:var(--text-secondary); line-height:1.7;">We are currently performing scheduled maintenance.<br>Stats and vault data will be back shortly.</div>
+        </div>
+    </main>
+
+    <!-- MAIN CONTENT (hidden during maintenance, use <template> to avoid nested comment issues) -->
+    <template id="main-content-maintenance">
     <main>
         <!-- VAULT APR DISPLAY SECTION -->
         <div class="metrics-card">
@@ -183,6 +196,7 @@
         
       
     </main>
+    </template> <!-- END MAINTENANCE HIDDEN CONTENT -->
     
     <footer>
         <p data-i18n="footer">&copy; Vice Algos are made with love. All rights reserved.</p>
