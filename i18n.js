@@ -48,7 +48,7 @@ const translations = {
         // How it works
         "how.title": "How it works",
         "how.step1.title": "Deposit",
-        "how.step1.text": "Fund your HyperLiquid account with USDC",
+        "how.step1.text": "Fund your HyperLiquid account with USDC — use referral code VICE",
         "how.step2.title": "Deploy",
         "how.step2.text": "Allocate capital and activate copy-trading",
         "how.step3.title": "Automate",
@@ -104,7 +104,7 @@ const translations = {
         // How it works
         "how.title": "Comment ça marche",
         "how.step1.title": "Déposer",
-        "how.step1.text": "Alimentez votre compte HyperLiquid en USDC",
+        "how.step1.text": "Alimentez votre compte HyperLiquid en USDC — code parrainage VICE",
         "how.step2.title": "Déployer",
         "how.step2.text": "Allouez du capital et activez le copy-trading",
         "how.step3.title": "Automatiser",
