@@ -210,6 +210,24 @@ header {
      align-items: center;
      text-align: center;
      padding: 12px 8px;
+     text-decoration: none;
+     color: inherit;
+     border-radius: 10px;
+     transition: all 0.3s ease;
+ }
+
+ .how-it-works__step--link:hover {
+     background: rgba(67, 255, 175, 0.08);
+     transform: translateY(-2px);
+ }
+
+ .how-it-works__step--link:hover .how-it-works__icon {
+     border-color: var(--accent);
+     box-shadow: 0 0 12px rgba(67, 255, 175, 0.3);
+ }
+
+ .how-it-works__step--link:hover .how-it-works__step-text {
+     color: var(--accent);
  }
 
  .how-it-works__icon {
