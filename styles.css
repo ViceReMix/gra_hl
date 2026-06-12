@@ -187,51 +187,100 @@ header {
  }
 
  .how-it-works__title {
-     margin: 0 0 14px;
+     margin: 0 0 20px;
      font-size: 1.05rem;
      font-weight: 700;
      text-align: center;
      color: var(--text-primary);
  }
 
- .how-it-works__steps {
-     display: grid;
-     grid-template-columns: repeat(3, minmax(0, 1fr));
-     gap: 12px;
+ .how-it-works__timeline {
+     display: flex;
+     align-items: stretch;
+     justify-content: center;
+     gap: 0;
+     margin-bottom: 20px;
  }
 
  .how-it-works__step {
-     background: var(--background);
-     border: 1px solid var(--border-color);
-     border-radius: 10px;
-     padding: 14px;
+     flex: 1;
+     max-width: 180px;
+     display: flex;
+     flex-direction: column;
+     align-items: center;
      text-align: center;
+     padding: 12px 8px;
+ }
+
+ .how-it-works__icon {
+     width: 40px;
+     height: 40px;
+     border-radius: 50%;
+     background: var(--background);
+     border: 2px solid var(--accent);
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     margin-bottom: 10px;
+     color: var(--accent);
+ }
+
+ .how-it-works__icon svg {
+     width: 20px;
+     height: 20px;
  }
 
  .how-it-works__step-title {
      font-weight: 700;
      color: var(--text-primary);
-     margin-bottom: 8px;
-     font-size: 0.95rem;
+     margin-bottom: 6px;
+     font-size: 0.9rem;
+     letter-spacing: 0.05em;
  }
 
  .how-it-works__step-text {
      color: var(--text-secondary);
-     font-size: 0.9rem;
+     font-size: 0.8rem;
+     line-height: 1.4;
  }
 
- .how-it-works__link {
-     color: var(--accent);
-     text-decoration: none;
+ .how-it-works__connector {
+     width: 40px;
+     min-height: 2px;
+     background: linear-gradient(90deg, var(--accent) 50%, transparent 50%);
+     background-size: 8px 2px;
+     background-repeat: repeat-x;
+     align-self: center;
+     margin-top: -20px;
+     opacity: 0.6;
  }
 
- .how-it-works__link:hover {
-     text-decoration: underline;
+ .how-it-works__trust {
+     text-align: center;
+     font-size: 0.85rem;
+     color: var(--text-secondary);
+     padding: 14px 16px;
+     background: var(--background);
+     border-radius: 8px;
+     border-left: 3px solid var(--accent);
+     line-height: 1.5;
  }
 
  @media (max-width: 900px) {
-     .how-it-works__steps {
-         grid-template-columns: 1fr;
+     .how-it-works__timeline {
+         flex-direction: column;
+         align-items: center;
+     }
+     .how-it-works__step {
+         max-width: 280px;
+         width: 100%;
+     }
+     .how-it-works__connector {
+         width: 2px;
+         height: 24px;
+         margin: 0;
+         background: linear-gradient(180deg, var(--accent) 50%, transparent 50%);
+         background-size: 2px 8px;
      }
  }
 
