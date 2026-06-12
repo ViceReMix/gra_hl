@@ -47,12 +47,15 @@ const translations = {
 
         // How it works
         "how.title": "How it works",
-        "how.step1.title": "1) Deposit USDC into the vault",
-        "how.step1.link": "Open the HyperLiquid vault",
-        "how.step2.title": "2) Strategy trades automatically",
-        "how.step2.text": "Trades are executed systematically without your intervention.",
-        "how.step3.title": "3) Withdraw anytime",
-        "how.step3.text": "You can withdraw your funds whenever you want.",
+        "how.step1.title": "Deposit",
+        "how.step1.text": "Fund your HyperLiquid account with USDC",
+        "how.step2.title": "Deploy",
+        "how.step2.text": "Allocate capital and activate copy-trading",
+        "how.step3.title": "Automate",
+        "how.step3.text": "System executes trades 24/7",
+        "how.step4.title": "Control",
+        "how.step4.text": "Pause or withdraw anytime",
+        "how.trust": "Your funds never leave HyperLiquid. You can stop copy-trading instantly and withdraw 100% of your capital at any time.",
 
         // Risk
         "risk.title": "Risk & assumptions",
@@ -99,13 +102,16 @@ const translations = {
         "verified.link": "Vérifiez l'historique des trades sur HyperLiquid en cliquant ici →",
 
         // How it works
-        "how.title": "Comment ça marche?",
-        "how.step1.title": "1) Déposez vos fonds dans le coffre-fort numérique",
-        "how.step1.link": "Ouvrir le coffre-fort numérique sur HyperLiquid",
-        "how.step2.title": "2) Déploiement actif de votre capital",
-        "how.step2.text": "Les trades sont exécutés systématiquement vous n'avez rien à faire.",
-        "how.step3.title": "3) Retirez à tout moment",
-        "how.step3.text": "Vous pouvez retirer vos fonds quand vous le souhaitez.",
+        "how.title": "Comment ça marche",
+        "how.step1.title": "Déposer",
+        "how.step1.text": "Alimentez votre compte HyperLiquid en USDC",
+        "how.step2.title": "Déployer",
+        "how.step2.text": "Allouez du capital et activez le copy-trading",
+        "how.step3.title": "Automatiser",
+        "how.step3.text": "Le système trade 24h/24 et 7j/7",
+        "how.step4.title": "Contrôler",
+        "how.step4.text": "Pause ou retrait à tout moment",
+        "how.trust": "Vos fonds ne quittent jamais HyperLiquid. Vous pouvez arrêter le copy-trading instantanément et retirer 100% de votre capital à tout moment.",
 
         // Risk
         "risk.title": "Attention aux Risques Financiers",
